@@ -1,0 +1,43 @@
+{
+  "extends": ["stylelint-config-standard-scss", "stylelint-config-standard"],
+  "plugins": ["stylelint-scss"],
+  "rules": {
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        "ignorePseudoElements": ["ng-deep"]
+      }
+    ],
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["use", "forward", "mixin", "include", "function"]
+      }
+    ],
+    "declaration-block-no-redundant-longhand-properties": true,
+    "scss/no-global-function-names": null,
+    "declaration-property-value-no-unknown": [
+      true,
+      {
+        "ignoreProperties": {
+          "background-color": ["/darken\\(/", "/lighten\\(/", "/color\\.adjust\\(/"],
+          "box-shadow": ["/rgba\\(/"]
+        }
+      }
+    ],
+    "scss/function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["darken", "lighten", "rgba", "transparentize"]
+      }
+    ],
+    "shorthand-property-no-redundant-values": true,
+    "selector-class-pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$|[a-zA-Z]",
+    "keyframes-name-pattern": "^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$|[a-zA-Z]",
+    "function-no-unknown": null,
+    "color-function-notation": null,
+    "alpha-value-notation": "number",
+    "color-function-alias-notation": "with-alpha",
+    "no-descending-specificity": null
+  }
+}
