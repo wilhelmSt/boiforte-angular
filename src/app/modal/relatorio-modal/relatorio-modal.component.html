@@ -1,0 +1,36 @@
+<div mat-dialog-title class="header">
+  <h2>Gerar relatório</h2>
+  <button (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="modal-container">
+  <div *ngIf="!gerado && !loading" class="form">
+    <p>Formato do arquivo (CSV ou PDF)</p>
+
+    <form class="full-width">
+      <select class="select-pdf-csv" placeholder="Selecione o formato" [value]="formato">
+        <option value="null" dafault disabled>Selecione o formato</option>
+        <option value="pdf">PDF</option>
+        <option value="csv">CSV</option>
+      </select>
+    </form>
+
+    <button mat-raised-button color="primary" class="btn-submit" [disabled]="!formato" (click)="gerarRelatorio()">
+      Gerar relatório <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="center">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="gerado" class="success">
+    <img src="assets/icons/check-circle.svg" alt="sucesso" />
+    <p>
+      Seu relatório foi gerado com sucesso!<br />
+      Confira nos arquivos do seu computador.
+    </p>
+  </div>
+</mat-dialog-content>
