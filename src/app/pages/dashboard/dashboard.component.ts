@@ -16,6 +16,7 @@ export class DashboardComponent {
   cortesEmFalta = [
     { corte: 'Maminha', especie: 'Gado' },
     { corte: 'Peito', especie: 'Frango' },
+    { corte: 'Coxa', especie: 'Frango' },
   ];
 
   validadeLotes = [
@@ -49,7 +50,6 @@ export class DashboardComponent {
   constructor(public dialog: MatDialog) {}
 
   openModalRelatorio(products: Array<any>) {
-    console.log(this.dialog);
     const id = 'modal-relatorio';
     const opened = this.dialog.getDialogById(id);
 

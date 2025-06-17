@@ -1,18 +1,58 @@
+/* styles.scss */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+/* ===== RESET CONSISTENTE ===== */
 html,
-body {
+body,
+:root,
+app-root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
+  font-family: Montserrat, sans-serif;
 }
 
-body {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+/* REGRA GLOBAL DE BOX-SIZING */
+html {
+  box-sizing: border-box;
+  font-family: Montserrat, sans-serif;
   background-color: #f1f1f1;
 }
 
-app-root {
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  font-family: Montserrat, sans-serif !important;
+}
+
+.material-icons {
+  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+  font-family: 'Material Icons' !important;
+}
+
+/* ===== COMPONENTES ANGULAR ===== */
+:host {
+  box-sizing: border-box;
   display: block;
-  height: 100%;
-  width: 100%;
+}
+
+/* ===== ANGULAR MATERIAL ===== */
+.mat-* {
+  box-sizing: border-box;
+
+  // font-family: Montserrat, sans-serif !important;
+}
+
+/* ===== ELEMENTOS ESPECÍFICOS ===== */
+div,
+section,
+article,
+header,
+footer,
+main,
+nav {
+  box-sizing: border-box;
+  font-family: inherit;
 }

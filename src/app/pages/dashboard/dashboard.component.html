@@ -3,16 +3,34 @@
 
   <div class="cards">
     <div class="card">
-      <h3>Total de pedidos</h3>
-      <p class="number">{{ pedidos }}</p>
+      <div class="title">
+        <h3>Total de pedidos</h3>
+        <div class="divider"></div>
+      </div>
+
+      <div class="number">
+        <p>{{ pedidos }}</p>
+      </div>
     </div>
+
     <div class="card">
-      <h3>Vendas do dia</h3>
-      <p class="number">{{ vendasHoje }}</p>
+      <div class="title">
+        <h3>Vendas do dia</h3>
+        <div class="divider"></div>
+      </div>
+
+      <div class="number">
+        <p>{{ vendasHoje }}</p>
+      </div>
     </div>
+
     <div class="card">
-      <h3>Cortes em falta</h3>
-      <ul>
+      <div class="title">
+        <h3>Cortes em falta</h3>
+        <div class="divider"></div>
+      </div>
+
+      <ul class="infos-list">
         <li *ngFor="let corte of cortesEmFalta">{{ corte.corte }} - {{ corte.especie }}</li>
       </ul>
     </div>
@@ -27,6 +45,10 @@
   </div>
 
   <div class="table-container">
-    <app-products-table [products]="estoqueCortes" [title]="cortes"></app-products-table>
+    <app-products-table
+      [products]="estoqueCortes"
+      [title]="cortes"
+      [openModalRelatorio]="openModalRelatorio.bind(this)"
+    ></app-products-table>
   </div>
 </section>

@@ -33,7 +33,7 @@
         <td [class]="i === products.length - 1 ? 'last-item' : ''">{{ product.vencimento }}</td>
         <td [class]="i === products.length - 1 ? 'last-item' : ''">{{ product.quantidade }}</td>
         <td [class]="i === products.length - 1 ? 'last-item' : ''">
-          <span [class]="getStatusClass(product.status)">{{ product.status }}</span>
+          <span class="badges" [class]="getStatusClass(product.status)">{{ product.status }}</span>
         </td>
       </tr>
     </tbody>

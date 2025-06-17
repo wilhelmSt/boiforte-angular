@@ -8,39 +8,80 @@
 }
 
 .dashboard {
-  width: 95%;
-  padding: 2rem;
+  width: 100%;
+  padding: 0 2rem;
   background-color: #f1f1f1;
+
+  h2 {
+    font-size: 2rem;
+  }
 
   .cards {
     gap: 1rem;
     display: flex;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     .card {
       flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: column;
       background: #fff;
-      padding: 1rem;
+      padding: 0.25rem;
       border-radius: 8px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-      h3 {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
+      .title {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+
+        .divider {
+          width: 90%;
+          height: 1.5px;
+          border-radius: 25px;
+          background-color: rgba(0, 0, 0, 0.35);
+        }
       }
 
       .number {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #6b1c1c;
+        flex: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
+        p {
+          font-size: 4rem;
+          font-weight: bold;
+          color: #6b1c1c;
+        }
       }
 
-      ul {
-        padding-left: 1rem;
+      .infos-list {
+        width: 100%;
+        padding: 0 10%;
+        flex: 2;
+        margin: 0.5rem 0;
 
         li {
-          font-size: 0.9rem;
+          font-size: 0.9375rem;
+          font-weight: 600;
           margin-bottom: 0.3rem;
+
+          &::marker {
+            font-size: 1.5rem;
+            color: #401515;
+          }
         }
       }
     }

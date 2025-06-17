@@ -1,8 +1,10 @@
 $primary: #401515;
+$text-primary: #281d1b;
 
 .table-container {
   margin-bottom: 0.5rem;
-  padding: 20px 0;
+  padding: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .table-header {
     display: flex;
@@ -27,7 +29,7 @@ $primary: #401515;
         display: flex;
         align-items: center;
         padding: 6px 12px;
-        border-width: 3px;
+        border-width: 2px;
         border-style: solid;
         border-color: $primary;
         border-radius: 4px;
@@ -84,7 +86,6 @@ $primary: #401515;
     overflow: hidden;
     table-layout: fixed;
     font-size: 15px;
-    font-family: 'Public Sans', sans-serif;
 
     th,
     td {
@@ -100,6 +101,7 @@ $primary: #401515;
 
     th {
       font-weight: 500;
+      padding-bottom: 0.35rem;
 
       &:nth-child(1) {
         width: 6%;
@@ -125,38 +127,31 @@ $primary: #401515;
         width: 16%;
       }
     }
+  }
 
-    td:not(:last-child),
-    th:not(:last-child) {
-      padding-right: 10px;
+  .badges {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+
+    &.badge-red {
+      background-color: #ff1e0040;
+      color: $text-primary;
     }
-  }
 
-  .badge-red {
-    background-color: #ff1e0040;
-    color: $primary;
-    padding: 4px 8px;
-    border-radius: 8px;
-  }
+    &.badge-yellow {
+      background-color: #ffa60040;
+      color: $text-primary;
+    }
 
-  .badge-yellow {
-    background-color: #ffa60040;
-    color: $primary;
-    padding: 4px 8px;
-    border-radius: 8px;
-  }
+    &.badge-green {
+      background-color: #00aa1f40;
+      color: $text-primary;
+    }
 
-  .badge-green {
-    background-color: #00aa1f40;
-    color: $primary;
-    padding: 4px 8px;
-    border-radius: 8px;
-  }
-
-  .badge-dark-red {
-    background: #c11515;
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 8px;
+    &.badge-dark-red {
+      background: #c11515;
+      color: #fff;
+    }
   }
 }
