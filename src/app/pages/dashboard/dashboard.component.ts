@@ -10,6 +10,8 @@ import { RelatorioModalComponent } from 'src/app/modal/relatorio-modal/relatorio
 export class DashboardComponent {
   pedidos = 90;
   vendasHoje = 23;
+  readonly lotes = 'Validade de lotes';
+  readonly cortes = 'Estoque de cortes';
 
   cortesEmFalta = [
     { corte: 'Maminha', especie: 'Gado' },
@@ -44,13 +46,14 @@ export class DashboardComponent {
     { id: '004', corte: 'Moela', especie: 'Porco', vencimento: '2024-01-05', quantidade: 0, status: 'Em falta' },
   ];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(public dialog: MatDialog) {}
 
-  openModalRelatorio() {
+  openModalRelatorio(products: Array<any>) {
+    console.log(this.dialog);
     const id = 'modal-relatorio';
-    const opened = this.dialog.openDialogs.find((dialog) => dialog.id === id);
+    const opened = this.dialog.getDialogById(id);
 
-    if (!opened || opened === undefined) {
+    if (!opened) {
       this.dialog.open(RelatorioModalComponent, {
         id,
         width: '370px',
@@ -58,19 +61,8 @@ export class DashboardComponent {
         maxWidth: '1000px',
         panelClass: 'relatorio-modal',
         closeOnNavigation: true,
+        data: { products },
       });
     }
-  }
-
-  getStatusClass(status: string): string {
-    const map: Record<string, string> = {
-      Vencido: 'badge-red',
-      'Perto de vencer': 'badge-yellow',
-      'Alto estoque': 'badge-green',
-      'Médio estoque': 'badge-yellow',
-      'Baixo estoque': 'badge-red',
-      'Em falta': 'badge-dark-red',
-    };
-    return map[status] || '';
   }
 }

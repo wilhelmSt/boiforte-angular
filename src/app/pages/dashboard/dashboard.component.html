@@ -19,86 +19,14 @@
   </div>
 
   <div class="table-container">
-    <div class="table-header">
-      <h3>Validade de lotes</h3>
-
-      <div class="table-buttons">
-        <button type="button" class="button-relatorio">
-          <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
-          Gerar relatório
-        </button>
-
-        <button type="button" class="button-ver-tudo">
-          Ver tudo
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>ID Lote</th>
-          <th>Corte</th>
-          <th>Espécie</th>
-          <th>Vencimento</th>
-          <th>Quantidade</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let lote of validadeLotes">
-          <td>{{ lote.id }}</td>
-          <td>{{ lote.corte }}</td>
-          <td>{{ lote.especie }}</td>
-          <td>{{ lote.vencimento }}</td>
-          <td>{{ lote.quantidade }}</td>
-          <td>
-            <span [class]="getStatusClass(lote.status)">{{ lote.status }}</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <app-products-table
+      [products]="validadeLotes"
+      [title]="lotes"
+      [openModalRelatorio]="openModalRelatorio.bind(this)"
+    ></app-products-table>
   </div>
 
   <div class="table-container">
-    <div class="table-header">
-      <h3>Estoque de cortes</h3>
-
-      <div class="table-buttons">
-        <button type="button" class="button-relatorio" (click)="openModalRelatorio()">
-          <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
-          Gerar relatório
-        </button>
-
-        <button type="button" class="button-ver-tudo">
-          Ver tudo
-          <mat-icon>arrow_forward</mat-icon>
-        </button>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>ID Lote</th>
-          <th>Corte</th>
-          <th>Espécie</th>
-          <th>Vencimento</th>
-          <th>Quantidade</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let estoque of estoqueCortes">
-          <td>{{ estoque.id }}</td>
-          <td>{{ estoque.corte }}</td>
-          <td>{{ estoque.especie }}</td>
-          <td>{{ estoque.vencimento }}</td>
-          <td>{{ estoque.quantidade }}</td>
-          <td>
-            <span [class]="getStatusClass(estoque.status)">{{ estoque.status }}</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <app-products-table [products]="estoqueCortes" [title]="cortes"></app-products-table>
   </div>
 </section>
