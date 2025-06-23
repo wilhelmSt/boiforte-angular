@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
   {
-    path: 'dashboard',
-    canActivateChild: [AuthGuard],
-    loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'login',
   },
   {
     path: 'login',
@@ -14,8 +15,14 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
+    component: LayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
+      },
+    ],
   },
   {
     path: '**',
