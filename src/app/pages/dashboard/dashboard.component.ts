@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CadastrarModalComponent } from 'src/app/modal/cadastrar-modal/cadastrar-modal.component';
 import { RelatorioModalComponent } from 'src/app/modal/relatorio-modal/relatorio-modal.component';
 
 @Component({
@@ -62,6 +63,21 @@ export class DashboardComponent {
         panelClass: 'relatorio-modal',
         closeOnNavigation: true,
         data: { products },
+      });
+    }
+  }
+
+  openModalCadastrar() {
+    const id = 'modal-cadastrar';
+    const opened = this.dialog.getDialogById(id);
+
+    if (!opened) {
+      this.dialog.open(CadastrarModalComponent, {
+        id,
+        width: '1100px',
+        height: 'auto',
+        panelClass: 'relatorio-modal',
+        closeOnNavigation: true,
       });
     }
   }

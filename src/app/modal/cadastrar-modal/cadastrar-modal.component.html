@@ -1,0 +1,19 @@
+<div mat-dialog-title class="header">
+  <h2>Cadastrar</h2>
+  <button (click)="close()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content class="modal-container">
+  <div>
+    <button *ngFor="let btn of buttons" type="button" [class.white]="btn?.isWhite" (click)="btn.callBackFn()">
+      <div class="wrap wrap-img">
+        <img [src]="'assets/icons/' + btn.icon" [alt]="btn.label" height="42" width="42" />
+      </div>
+      <div class="wrap wrap-span">
+        <span>{{ btn.label }}</span>
+      </div>
+    </button>
+  </div>
+</mat-dialog-content>
