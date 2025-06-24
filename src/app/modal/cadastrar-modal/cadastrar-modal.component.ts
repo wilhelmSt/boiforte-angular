@@ -17,7 +17,7 @@ export class CadastrarModalComponent {
     {
       label: 'Cadastrar cortes',
       icon: 'cortes-white.svg',
-      callBackFn: () => this.router.navigate(['/cortes']),
+      callBackFn: () => this.navigateTo('/cadastro-corte'),
     },
     {
       label: 'Cadastrar espécies',
@@ -62,6 +62,11 @@ export class CadastrarModalComponent {
     public dialogRef: MatDialogRef<CadastrarModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
+
+  navigateTo(path: string) {
+    this.close();
+    this.router.navigate([path]);
+  }
 
   close(): void {
     this.dialogRef.close();
