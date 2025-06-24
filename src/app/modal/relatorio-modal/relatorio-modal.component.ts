@@ -10,6 +10,7 @@ export class RelatorioModalComponent {
   formato: string | null = null;
   loading = false;
   gerado = false;
+  formatoDisabled = true;
 
   constructor(
     public dialogRef: MatDialogRef<RelatorioModalComponent>,
@@ -23,6 +24,12 @@ export class RelatorioModalComponent {
       this.loading = false;
       this.gerado = true;
     }, 2000);
+  }
+
+  handleFormatChange() {
+    if (this.formato != 'null') {
+      this.formatoDisabled = false;
+    }
   }
 
   close(): void {

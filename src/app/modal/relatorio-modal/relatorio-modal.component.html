@@ -10,15 +10,20 @@
     <p>Formato do arquivo (CSV ou PDF)</p>
 
     <form class="full-width">
-      <select class="select-pdf-csv" placeholder="Selecione o formato" [value]="formato">
+      <select
+        class="select-pdf-csv"
+        placeholder="Selecione o formato"
+        [value]="formato"
+        (change)="handleFormatChange()"
+      >
         <option value="null" dafault disabled>Selecione o formato</option>
         <option value="pdf">PDF</option>
         <option value="csv">CSV</option>
       </select>
     </form>
 
-    <button mat-raised-button color="primary" class="btn-submit" [disabled]="!formato" (click)="gerarRelatorio()">
-      Gerar relatório <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
+    <button class="btn-submit" [disabled]="formatoDisabled" (click)="gerarRelatorio()">
+      Gerar relatório <img src="assets/icons/excel-file-white.svg" alt="excel icon" width="18" height="18" />
     </button>
   </div>
 
