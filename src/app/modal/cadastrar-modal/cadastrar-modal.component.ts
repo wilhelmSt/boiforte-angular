@@ -22,27 +22,27 @@ export class CadastrarModalComponent {
     {
       label: 'Cadastrar espécies',
       icon: 'especies-white.svg',
-      callBackFn: () => this.router.navigate(['/especies']),
+      callBackFn: () => this.navigateTo('/cadastro-especie'),
     },
     {
       label: 'Cadastrar lote',
       icon: 'lotes-white.svg',
-      callBackFn: () => this.router.navigate(['/lotes']),
+      callBackFn: () => this.navigateTo('/cadastro-lote'),
     },
     {
       label: 'Cadastrar pedidos',
       icon: 'pedidos-white.svg',
-      callBackFn: () => this.router.navigate(['/pedidos']),
+      callBackFn: () => this.navigateTo('/cadastro-pedido'),
     },
     {
       label: 'Cadastrar fornecedor',
       icon: 'fornecedores-white.svg',
-      callBackFn: () => this.router.navigate(['/fornecedores']),
+      callBackFn: () => this.navigateTo('/cadastro-fornecedor'),
     },
     {
       label: 'Cadastrar cliente',
       icon: 'clientes-white.svg',
-      callBackFn: () => this.router.navigate(['/clientes']),
+      callBackFn: () => this.navigateTo('/cadastro-cliente'),
     },
     {
       label: 'Gerar relatório Geral',
