@@ -33,6 +33,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./pages/cadastro-fornecedor/cadastro-fornecedor.module').then((m) => m.CadastroFornecedorModule),
       },
+      {
+        path: 'cadastro-lote',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/cadastro-lote/cadastro-lote.module').then((m) => m.CadastroLoteModule),
+      },
     ],
   },
   {
