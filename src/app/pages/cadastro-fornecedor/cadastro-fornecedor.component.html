@@ -2,41 +2,53 @@
   <div class="cadastro-fornecedores">
     <h2>Cadastro de fornecedor</h2>
 
-    <form class="form-cadastro" (ngSubmit)="onSubmit()">
+    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
       <div class="grid-form">
         <div class="form-group">
           <label>Nome/Razão Social *</label>
-          <input type="text" [(ngModel)]="form.nome" name="nome" required />
+          <input type="text" formControlName="nome" class="form-control" />
+          <div *ngIf="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched" class="text-danger">
+            <span *ngIf="cadastroForm.get('nome')?.errors?.['required']">Nome obrigatório</span>
+            <span *ngIf="cadastroForm.get('nome')?.errors?.['minlength']">Mínimo 3 caracteres</span>
+          </div>
         </div>
 
         <div class="form-group">
           <label>CPF/CNPJ *</label>
-          <input type="text" [(ngModel)]="form.cpfCnpj" name="cpfCnpj" required />
+          <input type="text" formControlName="cpfCnpj" class="form-control" (input)="formatarCpfCnpj($event)" />
         </div>
 
         <div class="form-group">
           <label>E-mail</label>
-          <input type="text" [(ngModel)]="form.email" name="email" />
+          <input type="email" formControlName="email" class="form-control" />
+          <div *ngIf="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched" class="text-danger">
+            Informe um e-mail válido
+          </div>
         </div>
 
         <div class="form-group">
           <label>Telefone *</label>
-          <input type="text" [(ngModel)]="form.telefone" name="telefone" />
+          <input type="text" formControlName="telefone" class="form-control" (input)="formatarTelefone($event)" />
         </div>
 
-        <div class="form-group full-width">
-          <label>Descrição</label>
-          <textarea [(ngModel)]="form.descricao" name="descricao" rows="3"></textarea>
+        <div class="form-group">
+          <label>Endereço</label>
+          <input type="text" formControlName="endereco" class="form-control" />
         </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label>Descrição</label>
+        <textarea formControlName="descricao" class="form-control" rows="3"></textarea>
       </div>
 
       <div class="actions">
         <button type="button" class="btn-back" (click)="voltar()">
           <mat-icon>arrow_back</mat-icon>
-          <span>Voltar</span>
+          <span>Fornecedores</span>
         </button>
 
-        <button type="submit" class="btn-submit">
+        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
           <span>Cadastrar</span>
           <mat-icon>check</mat-icon>
         </button>

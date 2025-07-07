@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { formatInputToMoney } from 'src/app/shared/functions/constants';
@@ -8,7 +8,7 @@ import { formatInputToMoney } from 'src/app/shared/functions/constants';
   templateUrl: './cadastro-lote.component.html',
   styleUrls: ['./cadastro-lote.component.scss'],
 })
-export class CadastroLoteComponent {
+export class CadastroLoteComponent implements OnInit {
   cadastroForm!: FormGroup;
 
   tipos = ['gado', 'porco', 'frango'];
