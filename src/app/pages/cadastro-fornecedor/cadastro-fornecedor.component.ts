@@ -22,9 +22,9 @@ export class CadastroFornecedorComponent implements OnInit {
   initializeForm(): void {
     this.cadastroForm = this.fb.group({
       nome: ['wilhem', Validators.required],
-      cpfCnpj: ['06573805399'],
+      cpfCnpj: ['', Validators.required],
       email: ['', [Validators.email]],
-      telefone: [''],
+      telefone: ['', Validators.required],
       endereco: [''],
       descricao: [''],
     });

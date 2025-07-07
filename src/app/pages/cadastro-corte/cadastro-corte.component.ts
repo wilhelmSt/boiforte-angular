@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,20 +8,35 @@ import { Router } from '@angular/router';
   styleUrls: ['./cadastro-corte.component.scss'],
 })
 export class CadastroCorteComponent {
-  form = {
-    nomeCorte: 'Maminha',
-    especie: 'Gado',
-    validoAte: '11/02/25',
-    quantidade: 100,
-    idLote: '123',
-    dataEntrada: '12/02/25 11:20:23',
-    fornecedor: 'Seu Zé LTDA.',
-  };
+  cadastroForm!: FormGroup;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private fb: FormBuilder
+  ) {}
+
+  ngOnInit() {
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
+    this.cadastroForm = this.fb.group({
+      nomeCorte: ['Maminha', [Validators.required, Validators.minLength(2)]],
+      especie: ['Gado', [Validators.required]],
+      dataEntrada: ['12/02/25 11:20:23'],
+      validoAte: ['11/02/25'],
+      quantidade: [100, [Validators.min(0)]],
+      idLote: [{ value: '123', disabled: true }],
+      fornecedor: ['Seu Zé LTDA.'],
+    });
+  }
 
   onSubmit() {
-    console.log('Dados enviados:', this.form);
+    if (this.cadastroForm.valid) {
+      console.log('Dados enviados:', this.cadastroForm.value);
+    } else {
+      this.cadastroForm.markAllAsTouched();
+    }
   }
 
   voltar() {
