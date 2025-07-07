@@ -36,11 +36,11 @@
 }
 
 .modal-container {
-  padding: 4px 32px 24px;
+  padding: 4px 10px 24px 56px;
 
   div {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;

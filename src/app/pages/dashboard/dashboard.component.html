@@ -47,7 +47,9 @@
     <app-products-table
       [products]="validadeLotes"
       [title]="lotes"
+      [headers]="headers"
       [openModalRelatorio]="openModalRelatorio.bind(this)"
+      [navigateTo]="'/lotes'"
     ></app-products-table>
   </div>
 
@@ -55,7 +57,9 @@
     <app-products-table
       [products]="estoqueCortes"
       [title]="cortes"
+      [headers]="headers"
       [openModalRelatorio]="openModalRelatorio.bind(this)"
+      [navigateTo]="'/cortes'"
     ></app-products-table>
   </div>
 </section>

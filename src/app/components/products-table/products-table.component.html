@@ -1,0 +1,40 @@
+<div class="table-container">
+  <div class="table-header">
+    <h2>{{ title }}</h2>
+
+    <div class="table-buttons">
+      <button *ngIf="openModalRelatorio" type="button" class="button-relatorio" (click)="openModal()">
+        <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
+        Gerar relatório
+      </button>
+
+      <button *ngIf="navigateTo" type="button" class="button-ver-tudo">
+        Ver tudo
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th *ngFor="let header of headers">{{ header.name }}</th>
+        <th *ngIf="actions?.length">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products; let i = index">
+        <td [class]="i === products.length - 1 ? 'last-item' : ''" *ngFor="let prod of headers">
+          <ng-container *ngIf="prod.reference !== 'status'; else statusColunm">
+            {{ product[prod.reference] }}
+          </ng-container>
+
+          <ng-template #statusColunm>
+            <span *ngIf="product.status" class="badges" [class]="getStatusClass(product.status)">
+              {{ product.status }}
+            </span>
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

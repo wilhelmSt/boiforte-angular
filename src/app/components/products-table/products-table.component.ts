@@ -1,4 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
+
+type THeadersTable = {
+  name: string;
+  reference: string;
+};
 
 @Component({
   selector: 'app-products-table',
@@ -8,9 +14,12 @@ import { Component, Input } from '@angular/core';
 export class ProductsTableComponent {
   @Input() products: Array<any> = [];
   @Input() title: String = '';
+  @Input() headers: Array<THeadersTable> = [];
+  @Input() navigateTo?: String = '';
+  @Input() actions?: Array<any> = [];
   @Input() openModalRelatorio?: (products: Array<any>) => void;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   getStatusClass(status: string): string {
     const map: Record<string, string> = {
@@ -28,6 +37,12 @@ export class ProductsTableComponent {
   openModal() {
     if (this.openModalRelatorio) {
       this.openModalRelatorio(this.products);
+    }
+  }
+
+  navigateToPath() {
+    if (this.navigateTo) {
+      this.router.navigate([this.navigateTo]);
     }
   }
 }

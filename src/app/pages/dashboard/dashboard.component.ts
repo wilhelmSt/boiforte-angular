@@ -20,6 +20,34 @@ export class DashboardComponent {
     { corte: 'Coxa', especie: 'Frango' },
   ];
 
+  title = 'Tabela de cortes';
+  headers = [
+    {
+      name: 'ID Lote',
+      reference: 'id',
+    },
+    {
+      name: 'Corte',
+      reference: 'corte',
+    },
+    {
+      name: 'Espécies',
+      reference: 'especie',
+    },
+    {
+      name: 'Vencimento',
+      reference: 'vencimento',
+    },
+    {
+      name: 'Quantidade (kg)',
+      reference: 'quantidade',
+    },
+    {
+      name: 'Status',
+      reference: 'status',
+    },
+  ];
+
   validadeLotes = [
     { id: '001', corte: 'Maminha', especie: 'Gado', vencimento: '2023-12-01', quantidade: 150, status: 'Vencido' },
     {

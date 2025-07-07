@@ -20,11 +20,6 @@ export class CadastrarModalComponent {
       callBackFn: () => this.navigateTo('/cadastro-corte'),
     },
     {
-      label: 'Cadastrar espécies',
-      icon: 'especies-white.svg',
-      callBackFn: () => this.navigateTo('/cadastro-especie'),
-    },
-    {
       label: 'Cadastrar lote',
       icon: 'lotes-white.svg',
       callBackFn: () => this.navigateTo('/cadastro-lote'),
