@@ -3,6 +3,17 @@
     <h2>{{ title }}</h2>
 
     <div class="table-buttons">
+      <div *ngIf="searchAvaliable" class="input-search">
+        <mat-icon>search</mat-icon>
+
+        <input
+          type="text"
+          [ngModel]="searchText"
+          (ngModelChange)="onSearchInputChange($event)"
+          placeholder="Buscar..."
+        />
+      </div>
+
       <button *ngIf="openModalRelatorio" type="button" class="button-relatorio" (click)="openModal()">
         <img src="assets/icons/excel-file.svg" alt="excel icon" width="18" height="18" />
         Gerar relatório
@@ -14,11 +25,19 @@
       </button>
     </div>
   </div>
+
   <table>
     <thead>
       <tr>
-        <th *ngFor="let header of headers">{{ header.name }}</th>
-        <th *ngIf="actions?.length">Ações</th>
+        <th *ngFor="let header of headers">
+          <div class="titles-th">
+            {{ header.name }}
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </th>
+        <th *ngIf="actions?.length">
+          <div>Ações</div>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -37,4 +56,26 @@
       </tr>
     </tbody>
   </table>
+
+  <div class="pagination" *ngIf="totalPages >= 1 && searchAvaliable">
+    <button (click)="changePage(1)" [disabled]="currentPage === 1">
+      <mat-icon>first_page</mat-icon>
+    </button>
+
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <span *ngFor="let page of pages" (click)="changePage(page)" [class.active]="page === currentPage">
+      {{ page }}
+    </span>
+
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+
+    <button (click)="changePage(totalPages)" [disabled]="currentPage === totalPages">
+      <mat-icon>last_page</mat-icon>
+    </button>
+  </div>
 </div>

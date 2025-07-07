@@ -1,0 +1,23 @@
+<section class="especies">
+  <div class="header">
+    <h2>Espécies</h2>
+  </div>
+
+  <div class="table-container">
+    <app-products-table
+      [products]="especies"
+      [title]="titleEspecies"
+      [headers]="headersEspecies"
+      [totalProducts]="totalProducts"
+      [filterChange]="filterChange.bind(this)"
+      [searchAvaliable]="true"
+    ></app-products-table>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-back" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Voltar</span>
+    </button>
+  </div>
+</section>

@@ -44,6 +44,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./pages/cadastro-cliente/cadastro-cliente.module').then((m) => m.CadastroClienteModule),
       },
+      {
+        path: 'especies',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/especies/especies.module').then((m) => m.EspeciesModule),
+      },
     ],
   },
   {
