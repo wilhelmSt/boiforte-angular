@@ -1,5 +1,5 @@
 <section class="dashboard">
-  <div class="dashboard-header">
+  <div class="header">
     <h2>Início</h2>
 
     <button type="button" (click)="openModalCadastrar()">
@@ -31,15 +31,8 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="title">
-        <h3>Cortes em falta</h3>
-        <div class="divider"></div>
-      </div>
-
-      <ul class="infos-list">
-        <li *ngFor="let corte of cortesEmFalta">{{ corte.corte }} - {{ corte.especie }}</li>
-      </ul>
+    <div class="card-info">
+      <app-card-info cardTitle="Cortes em falta" [infos]="cortesEmFalta"></app-card-info>
     </div>
   </div>
 

@@ -49,6 +49,11 @@ const routes: Routes = [
         canActivateChild: [AuthGuard],
         loadChildren: () => import('./pages/especies/especies.module').then((m) => m.EspeciesModule),
       },
+      {
+        path: 'cortes',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/cortes/cortes.module').then((m) => m.CortesModule),
+      },
     ],
   },
   {

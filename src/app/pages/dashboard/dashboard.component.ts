@@ -14,11 +14,7 @@ export class DashboardComponent {
   readonly lotes = 'Validade de lotes';
   readonly cortes = 'Estoque de cortes';
 
-  cortesEmFalta = [
-    { corte: 'Maminha', especie: 'Gado' },
-    { corte: 'Peito', especie: 'Frango' },
-    { corte: 'Coxa', especie: 'Frango' },
-  ];
+  cortesEmFalta = ['Maminha - Gado', 'Peito - Frango', 'Coxa - Frango'];
 
   title = 'Tabela de cortes';
   headers = [

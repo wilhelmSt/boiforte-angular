@@ -1,0 +1,37 @@
+<section class="cortes">
+  <div class="header">
+    <h2>Cortes</h2>
+
+    <button type="button" (click)="navigateToPath('/cadastro-corte')">
+      <mat-icon>add</mat-icon>
+      Cadastrar
+    </button>
+  </div>
+
+  <div class="cards">
+    <app-card-info
+      *ngFor="let info of infos"
+      class="card-info"
+      [cardTitle]="info.title"
+      [infos]="info.contents"
+    ></app-card-info>
+  </div>
+
+  <div class="table-container">
+    <app-products-table
+      [products]="cortes"
+      [title]="titleCortes"
+      [headers]="headersCortes"
+      [totalProducts]="totalProducts"
+      [filterChange]="filterChange.bind(this)"
+      [searchAvaliable]="true"
+    ></app-products-table>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-back" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Voltar</span>
+    </button>
+  </div>
+</section>
