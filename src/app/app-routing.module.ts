@@ -69,6 +69,11 @@ const routes: Routes = [
         canActivateChild: [AuthGuard],
         loadChildren: () => import('./pages/clientes/clientes.module').then((m) => m.ClientesModule),
       },
+      {
+        path: 'pedidos',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/pedidos/pedidos.module').then((m) => m.PedidosModule),
+      },
     ],
   },
   {

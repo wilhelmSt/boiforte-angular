@@ -1,0 +1,41 @@
+<section class="pedidos">
+  <div class="header">
+    <h2>Pedidos</h2>
+
+    <button type="button" (click)="navigateToPath('/cadastro-pedido')">
+      <mat-icon>add</mat-icon>
+      Cadastrar
+    </button>
+  </div>
+
+  <div class="cards">
+    <app-card-stats
+      class="card-info"
+      [value]="totalPedidos.value"
+      [title]="totalPedidos.title"
+      [color]="totalPedidos.color"
+    ></app-card-stats>
+
+    <app-card-info class="card-info" [cardTitle]="infoPedido.title" [infos]="infoPedido.contents"></app-card-info>
+
+    <app-card-info class="card-info" [cardTitle]="infoCliente.title" [infos]="infoCliente.contents"></app-card-info>
+  </div>
+
+  <div class="table-container">
+    <app-products-table
+      [products]="pedidos"
+      [title]="titlePedidos"
+      [headers]="headersPedidos"
+      [totalProducts]="totalProducts"
+      [filterChange]="filterChange.bind(this)"
+      [searchAvaliable]="true"
+    ></app-products-table>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-back" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Voltar</span>
+    </button>
+  </div>
+</section>
