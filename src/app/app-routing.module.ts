@@ -54,6 +54,11 @@ const routes: Routes = [
         canActivateChild: [AuthGuard],
         loadChildren: () => import('./pages/cortes/cortes.module').then((m) => m.CortesModule),
       },
+      {
+        path: 'lotes',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/lotes/lotes.module').then((m) => m.LotesModule),
+      },
     ],
   },
   {
