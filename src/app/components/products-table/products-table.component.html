@@ -29,7 +29,7 @@
   <table>
     <thead>
       <tr>
-        <th *ngFor="let header of headers">
+        <th *ngFor="let header of headers" [ngClass]="{ 'id-th': header.reference === 'id' }">
           <div class="titles-th">
             {{ header.name }}
             <mat-icon>arrow_drop_down</mat-icon>

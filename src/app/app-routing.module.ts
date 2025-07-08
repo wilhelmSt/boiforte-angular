@@ -59,6 +59,11 @@ const routes: Routes = [
         canActivateChild: [AuthGuard],
         loadChildren: () => import('./pages/lotes/lotes.module').then((m) => m.LotesModule),
       },
+      {
+        path: 'fornecedores',
+        canActivateChild: [AuthGuard],
+        loadChildren: () => import('./pages/fornecedores/fornecedores.module').then((m) => m.FornecedoresModule),
+      },
     ],
   },
   {

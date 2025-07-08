@@ -1,0 +1,46 @@
+<section class="fornecedores">
+  <div class="header">
+    <h2>Fornecedores</h2>
+
+    <button type="button" (click)="navigateToPath('/cadastro-fornecedor')">
+      <mat-icon>add</mat-icon>
+      Cadastrar
+    </button>
+  </div>
+
+  <div class="cards">
+    <app-card-stats
+      class="card-info"
+      [value]="totalFornecedores.value"
+      [title]="totalFornecedores.title"
+      [color]="totalFornecedores.color"
+    ></app-card-stats>
+
+    <app-card-stats
+      class="card-info"
+      [value]="fornecedoresAtivos.value"
+      [title]="fornecedoresAtivos.title"
+      [color]="fornecedoresAtivos.color"
+    ></app-card-stats>
+
+    <app-card-info class="card-info" [cardTitle]="info.title" [infos]="info.contents"></app-card-info>
+  </div>
+
+  <div class="table-container">
+    <app-products-table
+      [products]="fornecedores"
+      [title]="titleFornecedores"
+      [headers]="headersFornecedores"
+      [totalProducts]="totalProducts"
+      [filterChange]="filterChange.bind(this)"
+      [searchAvaliable]="true"
+    ></app-products-table>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-back" (click)="voltar()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Voltar</span>
+    </button>
+  </div>
+</section>
