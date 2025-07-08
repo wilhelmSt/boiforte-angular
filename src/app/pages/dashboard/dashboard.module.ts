@@ -7,9 +7,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ProductsTableModule } from 'src/app/components/products-table/products-table.module';
 import { CardInfoModule } from 'src/app/components/card-info/card-info.module';
+import { CardStatsModule } from 'src/app/components/card-stats/card-stats.module';
 
 @NgModule({
   declarations: [DashboardComponent],
-  imports: [CommonModule, DashboardRoutingModule, MatIconModule, MatDialogModule, ProductsTableModule, CardInfoModule],
+  imports: [
+    CommonModule,
+    DashboardRoutingModule,
+    MatIconModule,
+    MatDialogModule,
+    ProductsTableModule,
+    CardInfoModule,
+    CardStatsModule,
+  ],
 })
 export class DashboardModule {}

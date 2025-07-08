@@ -9,26 +9,12 @@
   </div>
 
   <div class="cards">
-    <div class="card">
-      <div class="title">
-        <h3>Total de pedidos</h3>
-        <div class="divider"></div>
-      </div>
-
-      <div class="number">
-        <p>{{ pedidos }}</p>
-      </div>
+    <div class="card-info">
+      <app-card-stats [value]="pedidos" title="Total de pedidos" color="red"></app-card-stats>
     </div>
 
-    <div class="card">
-      <div class="title">
-        <h3>Vendas do dia</h3>
-        <div class="divider"></div>
-      </div>
-
-      <div class="number">
-        <p>{{ vendasHoje }}</p>
-      </div>
+    <div class="card-info">
+      <app-card-stats [value]="vendasHoje" title="Vendas do dia" color="red"></app-card-stats>
     </div>
 
     <div class="card-info">
