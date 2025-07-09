@@ -2,33 +2,33 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 
-export interface Fornecedor {
+export type Fornecedor = {
   id: number;
   nome: string;
-  cnpj: string;
-  telefone: string;
-  email: string;
-  endereco: string;
-  observacao: string;
-}
+  cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  observacao?: string;
+};
 
-export interface CreateFornecedorDto {
+export type CreateFornecedorDto = {
   nome: string;
-  cnpj: string;
-  telefone: string;
-  email: string;
-  endereco: string;
-  observacao: string;
-}
+  cnpj?: string;
+  telefone?: string;
+  email?: string;
+  endereco?: string;
+  observacao?: string;
+};
 
-export interface UpdateFornecedorDto {
+export type UpdateFornecedorDto = {
   nome?: string;
   cnpj?: string;
   telefone?: string;
   email?: string;
   endereco?: string;
   observacao?: string;
-}
+};
 
 @Injectable({
   providedIn: 'root',
