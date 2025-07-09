@@ -1,4 +1,4 @@
-export interface Produto {
+export type Produto = {
   id: number;
   nome: string;
   codigo?: string;
@@ -20,9 +20,9 @@ export interface Produto {
     id: number;
     nome: string;
   };
-}
+};
 
-export interface CreateProdutoDto {
+export type CreateProdutoDto = {
   nome: string;
   codigo?: string;
   descricao?: string;
@@ -37,9 +37,9 @@ export interface CreateProdutoDto {
   quantidadeAtacado?: number;
   imagem?: string;
   categoriaId: number;
-}
+};
 
-export interface UpdateProdutoDto {
+export type UpdateProdutoDto = {
   nome?: string;
   codigo?: string;
   descricao?: string;
@@ -54,4 +54,4 @@ export interface UpdateProdutoDto {
   quantidadeAtacado?: number;
   imagem?: string;
   categoriaId?: number;
-}
+};

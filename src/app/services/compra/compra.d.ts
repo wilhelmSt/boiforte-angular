@@ -16,15 +16,15 @@ export enum StatusCompra {
   CANCELADO = 'CANCELADO',
 }
 
-export interface ItemCompra {
+export type ItemCompra = {
   id?: number;
   produtoId: number;
   quantidade: number;
   valorUnitario: number;
   desconto?: number;
-}
+};
 
-export interface Compra {
+export type Compra = {
   id: number;
   tipoPagamento: TipoPagamento;
   condicaoPagamento: CondicaoPagamento;
@@ -44,9 +44,9 @@ export interface Compra {
     nome: string;
   };
   itens: ItemCompra[];
-}
+};
 
-export interface CreateCompraDto {
+export type CreateCompraDto = {
   tipoPagamento: TipoPagamento;
   condicaoPagamento: CondicaoPagamento;
   status: StatusCompra;
@@ -59,9 +59,9 @@ export interface CreateCompraDto {
   nfeChave?: string;
   clienteId: number;
   itens: ItemCompra[];
-}
+};
 
-export interface UpdateCompraDto {
+export type UpdateCompraDto = {
   tipoPagamento?: TipoPagamento;
   condicaoPagamento?: CondicaoPagamento;
   status?: StatusCompra;
@@ -73,4 +73,4 @@ export interface UpdateCompraDto {
   nfeNumero?: string;
   nfeChave?: string;
   clienteId?: number;
-}
+};
