@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
-type TFornecedor = {
-  nome: string;
-  endereco: string;
-  qntd_lotes: number;
-  telefone: string;
-  ultima_entrada: string;
-};
+import { Fornecedor, FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 
 type TFornecedorInfo = {
   value: number;
@@ -44,35 +37,43 @@ export class FornecedoresComponent {
       reference: 'ultima_entrada',
     },
   ];
-  fornecedores: Array<TFornecedor> = [];
+  fornecedores: Array<Fornecedor> = [];
   totalProducts = 0;
 
   totalFornecedores: TFornecedorInfo = {
-    value: 190,
+    value: 0,
     title: 'Total de fornecedores',
     color: 'black',
   };
 
   fornecedoresAtivos: TFornecedorInfo = {
-    value: 35,
+    value: 0,
     title: 'Total de fornecedores ativos',
     color: 'green',
   };
 
   info = {
     title: 'Top fornecedores',
-    contents: ['Carlos', 'João Frango', 'Zézin'],
+    contents: [],
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private fornecedorService: FornecedorService
+  ) {}
 
   ngOnInit() {
     this.getAllFornecedores();
   }
 
   getAllFornecedores() {
-    this.fornecedores = [];
-    this.totalProducts = this.fornecedores.length;
+    this.fornecedorService.listarTodos().subscribe({
+      next: (data) => {
+        this.fornecedores = data;
+        this.totalProducts = this.fornecedores.length;
+      },
+      error: (error) => console.error('Error ao carregar fornecedores'),
+    });
   }
 
   filterChange(search: string, page: number) {

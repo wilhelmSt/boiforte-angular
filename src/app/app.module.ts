@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RelatorioModalModule } from './modal/relatorio-modal/relatorio-modal.module';
 import { LayoutModule } from './shared/layout/layout.module';
 import { CadastrarModalModule } from './modal/cadastrar-modal/cadastrar-modal.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,6 +17,7 @@ import { CadastrarModalModule } from './modal/cadastrar-modal/cadastrar-modal.mo
     RelatorioModalModule,
     CadastrarModalModule,
     LayoutModule,
+    HttpClientModule,
   ],
   exports: [],
   providers: [],
