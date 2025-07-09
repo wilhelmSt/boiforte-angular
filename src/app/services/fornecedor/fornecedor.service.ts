@@ -1,34 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-
-export type Fornecedor = {
-  id: number;
-  nome: string;
-  cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  observacao?: string;
-};
-
-export type CreateFornecedorDto = {
-  nome: string;
-  cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  observacao?: string;
-};
-
-export type UpdateFornecedorDto = {
-  nome?: string;
-  cnpj?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  observacao?: string;
-};
+import { CreateFornecedorDto, Fornecedor, UpdateFornecedorDto } from './fornecedor';
 
 @Injectable({
   providedIn: 'root',
