@@ -8,6 +8,7 @@ import { LayoutModule } from './shared/layout/layout.module';
 import { CadastrarModalModule } from './modal/cadastrar-modal/cadastrar-modal.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +20,7 @@ import { ToastrModule } from 'ngx-toastr';
     CadastrarModalModule,
     LayoutModule,
     HttpClientModule,
+    SweetAlert2Module.forRoot(),
     ToastrModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-top-right',

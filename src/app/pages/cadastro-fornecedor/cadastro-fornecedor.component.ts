@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CreateFornecedorDto } from 'src/app/interfaces/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cadastro-fornecedor',
@@ -21,7 +22,7 @@ export class CadastroFornecedorComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initializeForm();
   }
 
@@ -56,9 +57,8 @@ export class CadastroFornecedorComponent implements OnInit {
       };
 
       this.fornecedorService.criar(reqBody).subscribe({
-        next: (res) => {
-          this.toastr.success('Fornecedor cadastrado com sucesso!', 'Sucesso');
-          // this.router.navigate(['/fornecedores']);
+        next: () => {
+          this.callSwalConfirm();
         },
         error: (er) => {
           console.error(er);
@@ -83,6 +83,27 @@ export class CadastroFornecedorComponent implements OnInit {
     } else {
       this.cadastroForm.markAllAsTouched();
     }
+  }
+
+  callSwalConfirm() {
+    Swal.fire({
+      title: 'Fornecedor cadastrado com sucesso!',
+      icon: 'success',
+      cancelButtonText: 'Cadastrar novo fornecedor',
+      confirmButtonText: 'Fornecedores',
+      showCancelButton: true,
+      reverseButtons: true,
+      customClass: {
+        cancelButton: 'swal2-cancel',
+        confirmButton: 'swal2-confirm',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.voltar();
+      } else if (result.isDismissed) {
+        this.cadastroForm.reset();
+      }
+    });
   }
 
   formatarCpfCnpj(event: any) {

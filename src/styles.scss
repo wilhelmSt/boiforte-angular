@@ -57,3 +57,34 @@ nav {
   box-sizing: border-box;
   font-family: inherit;
 }
+
+/* ===== SWAL - SWEETALERT2 ===== */
+.swal2-cancel {
+  background-color: white !important;
+  color: #401515cc !important;
+  border: 3px solid #401515cc !important;
+  border-radius: 4px !important;
+
+  &:hover {
+    background-color: #f8f8f8 !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(64, 21, 21, 0.2) !important;
+  }
+}
+
+.swal2-confirm {
+  background-color: #401515cc !important;
+  color: white !important;
+  border: 3px solid #401515cc;
+
+  &:hover {
+    background-color: #401515dd !important;
+  }
+
+  &:focus-visible {
+    border: 3px solid #401515cc;
+    box-shadow: none !important;
+  }
+}
