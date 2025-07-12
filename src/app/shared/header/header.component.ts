@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit {
     },
     {
       route: '/clientes',
-      name: 'clientes',
+      name: 'Clientes',
       isActive: false,
     },
     {

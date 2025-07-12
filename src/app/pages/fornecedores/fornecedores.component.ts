@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Fornecedor, FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
+import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 
 type TFornecedorInfo = {
   value: number;

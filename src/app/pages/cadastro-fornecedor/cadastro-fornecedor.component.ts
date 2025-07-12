@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CreateFornecedorDto } from 'src/app/interfaces/fornecedor';
+import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 
 @Component({
   selector: 'app-cadastro-fornecedor',
@@ -9,10 +12,13 @@ import { Router } from '@angular/router';
 })
 export class CadastroFornecedorComponent implements OnInit {
   cadastroForm!: FormGroup;
+  loadingButtonCreate = false;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private fornecedorService: FornecedorService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -21,18 +27,59 @@ export class CadastroFornecedorComponent implements OnInit {
 
   initializeForm(): void {
     this.cadastroForm = this.fb.group({
-      nome: ['wilhem', Validators.required],
-      cpfCnpj: ['', Validators.required],
+      nome: ['', [Validators.required, Validators.minLength(3)]],
+      cpfCnpj: ['', [Validators.required, Validators.minLength(14)]],
       email: ['', [Validators.email]],
-      telefone: ['', Validators.required],
+      telefone: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(15)]],
       endereco: [''],
-      descricao: [''],
+      observacao: [''],
     });
   }
 
   onSubmit() {
     if (this.cadastroForm.valid) {
-      console.log('Dados enviados:', this.cadastroForm.value);
+      this.loadingButtonCreate = true;
+
+      const body: CreateFornecedorDto = {
+        nome: this.cadastroForm.get('nome')?.value,
+        cnpj: this.cadastroForm.get('cpfCnpj')?.value,
+        telefone: this.cadastroForm.get('telefone')?.value,
+        email: this.cadastroForm.get('email')?.value || null,
+        endereco: this.cadastroForm.get('endereco')?.value || null,
+        observacao: this.cadastroForm.get('observacao')?.value || null,
+      };
+
+      const reqBody = {
+        ...body,
+        cnpj: body.cnpj?.replace(/\D/g, '') || '',
+        telefone: body.telefone?.replace(/\D/g, '') || '',
+      };
+
+      this.fornecedorService.criar(reqBody).subscribe({
+        next: (res) => {
+          this.toastr.success('Fornecedor cadastrado com sucesso!', 'Sucesso');
+          // this.router.navigate(['/fornecedores']);
+        },
+        error: (er) => {
+          console.error(er);
+
+          let errorMessage = 'Erro ao cadastrar fornecedor (contate o suporte).';
+
+          if (er.error?.errors) {
+            errorMessage = '';
+
+            er.error?.errors?.forEach((er: any) => {
+              errorMessage += er.message + '\n';
+            });
+          }
+
+          this.toastr.error(errorMessage, 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+        },
+        complete: () => (this.loadingButtonCreate = false),
+      });
     } else {
       this.cadastroForm.markAllAsTouched();
     }
