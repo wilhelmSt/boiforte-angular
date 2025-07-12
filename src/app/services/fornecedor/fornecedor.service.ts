@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { CreateFornecedorDto, Fornecedor, UpdateFornecedorDto } from './fornecedor';
+import { CreateFornecedorDto, Fornecedor, UpdateFornecedorDto } from 'src/app/interfaces/fornecedor';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { Compra, CreateCompraDto, UpdateCompraDto } from './compra';
+import { Compra, CreateCompraDto, UpdateCompraDto } from 'src/app/interfaces/compra';
 
 @Injectable({
   providedIn: 'root',

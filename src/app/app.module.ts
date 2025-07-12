@@ -7,6 +7,7 @@ import { RelatorioModalModule } from './modal/relatorio-modal/relatorio-modal.mo
 import { LayoutModule } from './shared/layout/layout.module';
 import { CadastrarModalModule } from './modal/cadastrar-modal/cadastrar-modal.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,6 +19,21 @@ import { HttpClientModule } from '@angular/common/http';
     CadastrarModalModule,
     LayoutModule,
     HttpClientModule,
+    ToastrModule.forRoot({
+      timeOut: 5000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      progressBar: true,
+      closeButton: true,
+      enableHtml: true,
+      newestOnTop: true,
+      iconClasses: {
+        error: 'toast-error',
+        info: 'toast-info',
+        success: 'toast-success',
+        warning: 'toast-warning',
+      },
+    }),
   ],
   exports: [],
   providers: [],

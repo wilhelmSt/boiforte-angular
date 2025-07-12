@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { CreateLoteDto, Lote, UpdateLoteDto } from './lote';
+import { CreateLoteDto, Lote, UpdateLoteDto } from 'src/app/interfaces/lote';
 
 @Injectable({
   providedIn: 'root',
