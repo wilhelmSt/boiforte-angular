@@ -19,10 +19,8 @@
 
   <div class="table-container">
     <app-products-table
-      [products]="lotes"
       [title]="titleLotes"
       [headers]="headersLotes"
-      [totalProducts]="totalProducts"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
     ></app-products-table>

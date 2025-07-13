@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { CreateFornecedorDto, Fornecedor, UpdateFornecedorDto } from 'src/app/interfaces/fornecedor';
+import {
+  CreateFornecedorDto,
+  Fornecedor,
+  SearchFornecedor,
+  SearchFornecedorResponse,
+  UpdateFornecedorDto,
+} from 'src/app/interfaces/fornecedor';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +25,16 @@ export class FornecedorService {
     return this.api.get<Fornecedor[]>(this.endpoint);
   }
 
-  buscar(termo: string): Observable<Fornecedor[]> {
-    return this.api.get<Fornecedor[]>(`${this.endpoint}/search`, { q: termo });
+  buscar(termo?: SearchFornecedor): Observable<SearchFornecedorResponse> {
+    return this.api.get<SearchFornecedorResponse>(`${this.endpoint}/search`, termo);
+  }
+
+  getTopFornecedores(): Observable<Array<Fornecedor>> {
+    return this.api.get<Array<Fornecedor>>(`${this.endpoint}/top-fornecedores`);
+  }
+
+  getFornecedoresAtivos(): Observable<{ fornecedoresAtivos: number }> {
+    return this.api.get<{ fornecedoresAtivos: number }>(`${this.endpoint}/fornecedores-ativos`);
   }
 
   obterPorId(id: number): Observable<Fornecedor> {

@@ -6,12 +6,7 @@
       <div *ngIf="searchAvaliable" class="input-search">
         <mat-icon>search</mat-icon>
 
-        <input
-          type="text"
-          [ngModel]="searchText"
-          (ngModelChange)="onSearchInputChange($event)"
-          placeholder="Buscar..."
-        />
+        <input type="text" [ngModel]="searchText" (input)="onSearchInputChange($event)" placeholder="Buscar..." />
       </div>
 
       <button *ngIf="openModalRelatorio" type="button" class="button-relatorio" (click)="openModal()">
@@ -41,10 +36,10 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of products; let i = index">
-        <td [class]="i === products.length - 1 ? 'last-item' : ''" *ngFor="let prod of headers">
+      <tr *ngFor="let product of products.products; let i = index">
+        <td [class]="i === products.products.length - 1 ? 'last-item' : ''" *ngFor="let prod of headers">
           <ng-container *ngIf="prod.reference !== 'status'; else statusColunm">
-            {{ product[prod.reference] }}
+            {{ product[prod.reference] || '-' }}
           </ng-container>
 
           <ng-template #statusColunm>
@@ -57,7 +52,7 @@
     </tbody>
   </table>
 
-  <div class="pagination" *ngIf="totalPages >= 1 && searchAvaliable">
+  <div class="pagination" *ngIf="products.total >= 1 && searchAvaliable">
     <button (click)="changePage(1)" [disabled]="currentPage === 1">
       <mat-icon>first_page</mat-icon>
     </button>
@@ -70,11 +65,11 @@
       {{ page }}
     </span>
 
-    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === products.total">
       <mat-icon>chevron_right</mat-icon>
     </button>
 
-    <button (click)="changePage(totalPages)" [disabled]="currentPage === totalPages">
+    <button (click)="changePage(products.total)" [disabled]="currentPage === products.total">
       <mat-icon>last_page</mat-icon>
     </button>
   </div>

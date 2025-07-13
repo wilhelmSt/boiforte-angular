@@ -28,10 +28,8 @@
 
   <div class="table-container">
     <app-products-table
-      [products]="clientes"
       [title]="titleClientes"
       [headers]="headersClientes"
-      [totalProducts]="totalProducts"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
     ></app-products-table>

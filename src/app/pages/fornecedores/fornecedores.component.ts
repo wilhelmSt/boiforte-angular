@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { ProductsTable } from 'src/app/components/products-table/products-table.component';
+import { Fornecedor, SearchFornecedor, SearchFornecedorResponse } from 'src/app/interfaces/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 
 type TFornecedorInfo = {
@@ -38,8 +39,10 @@ export class FornecedoresComponent {
       reference: 'ultima_entrada',
     },
   ];
-  fornecedores: Array<Fornecedor> = [];
-  totalProducts = 0;
+
+  fornecedores: ProductsTable<Fornecedor> | null = null;
+  isLoading: boolean = false;
+  searchText: string = '';
 
   totalFornecedores: TFornecedorInfo = {
     value: 0,
@@ -53,7 +56,10 @@ export class FornecedoresComponent {
     color: 'green',
   };
 
-  info = {
+  info: {
+    title: string;
+    contents: Array<string>;
+  } = {
     title: 'Top fornecedores',
     contents: [],
   };
@@ -65,20 +71,57 @@ export class FornecedoresComponent {
 
   ngOnInit() {
     this.getAllFornecedores();
+    this.getTopFornecedores();
+    this.getFornecedoresAtivos();
   }
 
-  getAllFornecedores() {
-    this.fornecedorService.listarTodos().subscribe({
-      next: (data) => {
-        this.fornecedores = data;
-        this.totalProducts = this.fornecedores.length;
+  getAllFornecedores(termo = {}) {
+    this.isLoading = true;
+
+    this.fornecedorService.buscar(termo).subscribe({
+      next: (res: SearchFornecedorResponse) => {
+        this.fornecedores = {
+          products: res.data || [],
+          total: res.total || 0,
+          pages: res.pages || 0,
+        };
+
+        this.totalFornecedores.value = res.total;
       },
       error: (error) => console.error('Error ao carregar fornecedores'),
+      complete: () => (this.isLoading = false),
+    });
+  }
+
+  getTopFornecedores() {
+    this.fornecedorService.getTopFornecedores().subscribe({
+      next: (res) => {
+        this.info.contents = res.map((value) => {
+          return value.nome.slice(0, 100);
+        });
+      },
+      error: (error) => console.error('Error ao carregar top fornecedores'),
+    });
+  }
+
+  getFornecedoresAtivos() {
+    this.fornecedorService.getFornecedoresAtivos().subscribe({
+      next: (res) => {
+        this.fornecedoresAtivos.value = res.fornecedoresAtivos;
+      },
+      error: (error) => console.error('Error ao carregar fornecedores ativos'),
     });
   }
 
   filterChange(search: string, page: number) {
-    console.log(search, page);
+    const termo: SearchFornecedor = { q: search, page };
+    this.searchText = search;
+    this.getAllFornecedores(termo);
+  }
+
+  onSearchTextChange(newSearchText: string) {
+    this.searchText = newSearchText;
+    this.filterChange(newSearchText, 1);
   }
 
   voltar() {
