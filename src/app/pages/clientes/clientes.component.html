@@ -28,10 +28,14 @@
 
   <div class="table-container">
     <app-products-table
+      *ngIf="clientes && !isLoading"
+      [products]="clientes"
       [title]="titleClientes"
       [headers]="headersClientes"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
+      [isLoading]="isLoading"
+      [(searchText)]="searchText"
     ></app-products-table>
   </div>
 

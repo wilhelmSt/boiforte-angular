@@ -1,15 +1,7 @@
-export type SearchFornecedorResponse = {
-  data: Array<Fornecedor>;
-  total: number;
-  pages: number;
-};
+import { TSearch } from './geral';
 
-export type SearchFornecedor = {
-  q?: string;
-  page?: number;
-  limit?: number;
+export type SearchFornecedor = TSearch & {
   orderBy?: 'nome' | 'endereco' | 'telefone' | 'ultima_entrada' | 'quantidade_lotes';
-  orderDirection?: 'ASC' | 'DESC';
 };
 
 export type Fornecedor = {

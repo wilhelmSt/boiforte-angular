@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import {
-  CreateFornecedorDto,
-  Fornecedor,
-  SearchFornecedor,
-  SearchFornecedorResponse,
-  UpdateFornecedorDto,
-} from 'src/app/interfaces/fornecedor';
+import { CreateFornecedorDto, Fornecedor, UpdateFornecedorDto } from 'src/app/interfaces/fornecedor';
+import { SearchResponse, TSearch } from 'src/app/interfaces/geral';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +20,8 @@ export class FornecedorService {
     return this.api.get<Fornecedor[]>(this.endpoint);
   }
 
-  buscar(termo?: SearchFornecedor): Observable<SearchFornecedorResponse> {
-    return this.api.get<SearchFornecedorResponse>(`${this.endpoint}/search`, termo);
+  buscar(termo?: TSearch): Observable<SearchResponse<Fornecedor>> {
+    return this.api.get<SearchResponse<Fornecedor>>(`${this.endpoint}/search`, termo);
   }
 
   getTopFornecedores(): Observable<Array<Fornecedor>> {

@@ -44,6 +44,7 @@ module.exports = tseslint.config(
       ],
 
       // TypeScript
+      '@typescript-eslint/semi': ['error', 'always'],
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-member-accessibility': [

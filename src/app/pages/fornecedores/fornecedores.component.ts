@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductsTable } from 'src/app/components/products-table/products-table.component';
-import { Fornecedor, SearchFornecedor, SearchFornecedorResponse } from 'src/app/interfaces/fornecedor';
+import { Fornecedor, SearchFornecedor } from 'src/app/interfaces/fornecedor';
+import { SearchResponse, TableHeader, TInfo, TInfoList } from 'src/app/interfaces/geral';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
-
-type TFornecedorInfo = {
-  value: number;
-  title: string;
-  color: 'green' | 'black' | 'red';
-};
 
 @Component({
   selector: 'app-fornecedores',
@@ -17,7 +12,7 @@ type TFornecedorInfo = {
 })
 export class FornecedoresComponent {
   titleFornecedores = 'Tabela de Fornecedores';
-  headersFornecedores = [
+  headersFornecedores: TableHeader = [
     {
       name: 'Nome/Razão Social',
       reference: 'nome',
@@ -28,7 +23,7 @@ export class FornecedoresComponent {
     },
     {
       name: 'Quantidade de lotes',
-      reference: 'qntd_lotes',
+      reference: 'quantidade_lotes',
     },
     {
       name: 'telefone',
@@ -44,22 +39,19 @@ export class FornecedoresComponent {
   isLoading: boolean = false;
   searchText: string = '';
 
-  totalFornecedores: TFornecedorInfo = {
+  totalFornecedores: TInfo = {
     value: 0,
     title: 'Total de fornecedores',
     color: 'black',
   };
 
-  fornecedoresAtivos: TFornecedorInfo = {
+  fornecedoresAtivos: TInfo = {
     value: 0,
     title: 'Total de fornecedores ativos',
     color: 'green',
   };
 
-  info: {
-    title: string;
-    contents: Array<string>;
-  } = {
+  info: TInfoList = {
     title: 'Top fornecedores',
     contents: [],
   };
@@ -79,7 +71,7 @@ export class FornecedoresComponent {
     this.isLoading = true;
 
     this.fornecedorService.buscar(termo).subscribe({
-      next: (res: SearchFornecedorResponse) => {
+      next: (res: SearchResponse<Fornecedor>) => {
         this.fornecedores = {
           products: res.data || [],
           total: res.total || 0,
