@@ -5,10 +5,14 @@
 
   <div class="table-container">
     <app-products-table
+      *ngIf="especies && !isLoading"
+      [products]="especies"
       [title]="titleEspecies"
       [headers]="headersEspecies"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
+      [isLoading]="isLoading"
+      [(searchText)]="searchText"
     ></app-products-table>
   </div>
 

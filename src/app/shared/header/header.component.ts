@@ -16,12 +16,12 @@ export class HeaderComponent implements OnInit {
   }> = [
     {
       route: '/cortes',
-      name: 'Cortes',
+      name: 'Produtos',
       isActive: false,
     },
     {
       route: '/especies',
-      name: 'Espécies',
+      name: 'Espécies | Cortes',
       isActive: false,
     },
     {

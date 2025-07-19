@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-type TEspecie = {
-  id: number;
-  especie: string;
-  total_cortes: number;
-};
+import { ProductsTable } from 'src/app/components/products-table/products-table.component';
+import { SearchEspecie, TEspecie } from 'src/app/interfaces/especie';
+import { SearchResponse } from 'src/app/interfaces/geral';
+import { EspecieService } from 'src/app/services/especie/especie.service';
 
 @Component({
   selector: 'app-especies',
@@ -13,55 +11,71 @@ type TEspecie = {
   styleUrls: ['./especies.component.scss'],
 })
 export class EspeciesComponent implements OnInit {
-  titleEspecies = 'Tabela de espécies';
+  titleEspecies = 'Tabela de Espécies | Cortes';
   headersEspecies = [
     {
       name: 'ID Espécie',
-      reference: 'id',
+      reference: 'idEspecie',
     },
     {
       name: 'Espécie',
-      reference: 'especie',
+      reference: 'nomeEspecie',
     },
     {
-      name: 'total de cortes',
-      reference: 'total_cortes',
+      name: 'ID Corte',
+      reference: 'idCorte',
+    },
+    {
+      name: 'Corte',
+      reference: 'nomeCorte',
     },
   ];
-  especies: Array<TEspecie> = [];
-  totalProducts = 3;
 
-  constructor(private router: Router) {}
+  especies: ProductsTable<TEspecie> | null = null;
+  isLoading = false;
+  searchText: string = '';
+
+  constructor(
+    private router: Router,
+    private especieService: EspecieService
+  ) {}
 
   ngOnInit() {
     this.getAllEspecies();
   }
 
-  getAllEspecies() {
-    this.especies = [
-      {
-        id: 20,
-        especie: 'gado',
-        total_cortes: 205,
+  getAllEspecies(termo = {}) {
+    this.isLoading = true;
+
+    this.especieService.buscar(termo).subscribe({
+      next: (res: SearchResponse<TEspecie>) => {
+        this.especies = {
+          products: res.data || [],
+          total: res.total || 0,
+          pages: res.pages || 0,
+        };
       },
-      {
-        id: 21,
-        especie: 'porco',
-        total_cortes: 505,
-      },
-      {
-        id: 22,
-        especie: 'frango',
-        total_cortes: 105,
-      },
-    ];
+      error: (error) => console.error('Error ao carregar espécies'),
+      complete: () => (this.isLoading = false),
+    });
   }
 
   filterChange(search: string, page: number) {
-    console.log(search, page);
+    const termo: SearchEspecie = { q: search, page };
+    this.searchText = search;
+    this.getAllEspecies(termo);
+  }
+
+  onSearchTextChange(newSearchText: string) {
+    this.searchText = newSearchText;
+    this.filterChange(newSearchText, 1);
   }
 
   voltar() {
-    this.router.navigate(['/dashboard']);
+    this.navigateToPath('/dashboard');
+  }
+
+  navigateToPath(path: string) {
+    this.router.navigate([path]);
   }
 }
