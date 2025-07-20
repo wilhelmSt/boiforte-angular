@@ -11,7 +11,8 @@
               {{ fornecedor.nome }}
             </option>
 
-            <option *ngIf="!fornecedores?.length && !isLoading" [value]="">Nenhum fornecedor disponível!</option>
+            <option *ngIf="!fornecedores?.length && !isLoading" [value]="">Nenhum fornecedor disponível</option>
+            <option *ngIf="!fornecedores?.length && isLoading" [value]="">Carregando...</option>
           </select>
           <div
             *ngIf="cadastroForm.get('fornecedor')?.invalid && cadastroForm.get('fornecedor')?.touched"
@@ -22,25 +23,31 @@
         </div>
 
         <div class="form-group">
+          <label>Espécie *</label>
+          <select formControlName="tipo" class="form-control" (change)="onChangeSpecies($event.target)">
+            <option *ngFor="let especie of especies" [value]="especie.id">{{ especie.nome }}</option>
+
+            <option *ngIf="!especies?.length && !isLoading" [value]="">Nenhuma espécie encontrada</option>
+            <option *ngIf="!especies?.length && isLoading" [value]="">Carregando...</option>
+          </select>
+          <div *ngIf="cadastroForm.get('tipo')?.invalid && cadastroForm.get('tipo')?.touched" class="text-danger">
+            Espécie é obrigatória
+          </div>
+        </div>
+
+        <div class="form-group">
           <label>Corte *</label>
           <select formControlName="categoria" class="form-control">
-            <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+            <option *ngFor="let corte of cortes" [value]="corte.id">{{ corte.nome }}</option>
+
+            <option *ngIf="!cortes?.length && !isLoading" [value]="">Nenhum corte encontrado</option>
+            <option *ngIf="!cortes?.length && isLoading" [value]="">Carregando...</option>
           </select>
           <div
             *ngIf="cadastroForm.get('categoria')?.invalid && cadastroForm.get('categoria')?.touched"
             class="text-danger"
           >
             Corte é obrigatório
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Espécie *</label>
-          <select formControlName="tipo" class="form-control">
-            <option *ngFor="let tipo of tipos" [value]="tipo">{{ tipo }}</option>
-          </select>
-          <div *ngIf="cadastroForm.get('tipo')?.invalid && cadastroForm.get('tipo')?.touched" class="text-danger">
-            Espécie é obrigatória
           </div>
         </div>
 
