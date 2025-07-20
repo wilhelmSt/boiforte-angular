@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
     isActive: boolean;
   }> = [
     {
-      route: '/cortes',
+      route: '/produtos',
       name: 'Produtos',
       isActive: false,
     },

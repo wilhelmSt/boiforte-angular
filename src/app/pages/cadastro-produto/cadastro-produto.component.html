@@ -1,0 +1,220 @@
+<section class="section-cadastro-produtos">
+  <div class="cadastro-produtos">
+    <h2>Cadastro de Produtos</h2>
+
+    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+      <div class="grid-form">
+        <div class="form-group">
+          <label for="codigo">Código</label>
+          <input
+            id="codigo"
+            type="text"
+            formControlName="codigo"
+            class="form-control"
+            placeholder="Código do produto (opcional)"
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('codigo')?.invalid &&
+              (cadastroForm.get('codigo')?.touched || cadastroForm.get('codigo')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('codigo')?.errors?.['minlength']"> Mínimo 2 caracteres </span>
+            <span *ngIf="cadastroForm.get('codigo')?.errors?.['maxlength']"> Máximo 20 caracteres </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="corte">Corte *</label>
+          <select id="corte" formControlName="corteId" class="form-control" required>
+            <option value="" disabled selected>Selecione um corte</option>
+            <option *ngFor="let corte of cortes" [value]="corte.id">
+              {{ corte.nome }}
+            </option>
+          </select>
+          <div
+            *ngIf="
+              cadastroForm.get('corteId')?.invalid &&
+              (cadastroForm.get('corteId')?.touched || cadastroForm.get('corteId')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('corteId')?.errors?.['required']"> Corte é obrigatório </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="precoPadrao">Preço padrão *</label>
+          <input
+            id="precoPadrao"
+            type="number"
+            formControlName="precoPadrao"
+            class="form-control"
+            placeholder="0.00"
+            min="0.01"
+            step="0.01"
+            required
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('precoPadrao')?.invalid &&
+              (cadastroForm.get('precoPadrao')?.touched || cadastroForm.get('precoPadrao')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('precoPadrao')?.errors?.['required']"> Preço é obrigatório </span>
+            <span *ngIf="cadastroForm.get('precoPadrao')?.errors?.['min']"> Valor mínimo: R$ 0.01 </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="estoqueMinimo">Estoque mínimo *</label>
+          <input
+            id="estoqueMinimo"
+            type="number"
+            formControlName="estoqueMinimo"
+            class="form-control"
+            placeholder="0"
+            min="0"
+            step="0.01"
+            required
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('estoqueMinimo')?.invalid &&
+              (cadastroForm.get('estoqueMinimo')?.touched || cadastroForm.get('estoqueMinimo')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('estoqueMinimo')?.errors?.['required']"> Estoque mínimo é obrigatório </span>
+            <span *ngIf="cadastroForm.get('estoqueMinimo')?.errors?.['min']"> Valor não pode ser negativo </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="promocao">
+            <input
+              id="promocao"
+              type="checkbox"
+              formControlName="promocao"
+              class="form-checkbox"
+              (change)="togglePromocao()"
+            />
+            Promoção
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="cadastroForm.get('promocao')?.value">
+          <label for="precoPromocional">Preço Promocional *</label>
+          <input
+            id="precoPromocional"
+            type="number"
+            formControlName="precoPromocional"
+            class="form-control"
+            placeholder="0.00"
+            min="0.01"
+            step="0.01"
+            [required]="cadastroForm.get('promocao')?.value"
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('precoPromocional')?.invalid &&
+              (cadastroForm.get('precoPromocional')?.touched || cadastroForm.get('precoPromocional')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('precoPromocional')?.errors?.['required']">
+              Preço promocional é obrigatório quando em promoção
+            </span>
+            <span *ngIf="cadastroForm.get('precoPromocional')?.errors?.['min']"> Valor mínimo: R$ 0.01 </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="descontoAtacado">
+            <input
+              id="descontoAtacado"
+              type="checkbox"
+              formControlName="descontoAtacado"
+              class="form-checkbox"
+              (change)="toggleAtacado()"
+            />
+            Oferecer desconto atacado
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="cadastroForm.get('descontoAtacado')?.value">
+          <label for="precoAtacado">Preço Atacado *</label>
+          <input
+            id="precoAtacado"
+            type="number"
+            formControlName="precoAtacado"
+            class="form-control"
+            placeholder="0.00"
+            min="0.01"
+            step="0.01"
+            [required]="cadastroForm.get('descontoAtacado')?.value"
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('precoAtacado')?.invalid &&
+              (cadastroForm.get('precoAtacado')?.touched || cadastroForm.get('precoAtacado')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('precoAtacado')?.errors?.['required']"> Preço atacado é obrigatório </span>
+            <span *ngIf="cadastroForm.get('precoAtacado')?.errors?.['min']"> Valor mínimo: R$ 0.01 </span>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="cadastroForm.get('descontoAtacado')?.value">
+          <label for="quantidadeAtacado">Quantidade Mínima Atacado *</label>
+          <input
+            id="quantidadeAtacado"
+            type="number"
+            formControlName="quantidadeAtacado"
+            class="form-control"
+            placeholder="0"
+            min="1"
+            step="1"
+            [required]="cadastroForm.get('descontoAtacado')?.value"
+          />
+          <div
+            *ngIf="
+              cadastroForm.get('quantidadeAtacado')?.invalid &&
+              (cadastroForm.get('quantidadeAtacado')?.touched || cadastroForm.get('quantidadeAtacado')?.dirty)
+            "
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('quantidadeAtacado')?.errors?.['required']"> Quantidade é obrigatória </span>
+            <span *ngIf="cadastroForm.get('quantidadeAtacado')?.errors?.['min']"> Mínimo 1 unidade </span>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="descricao">Descrição</label>
+          <textarea
+            id="descricao"
+            formControlName="descricao"
+            class="form-control"
+            rows="3"
+            placeholder="Descrição do produto (opcional)"
+          ></textarea>
+          <small class="char-counter"> {{ cadastroForm.get('descricao')?.value?.length || 0 }}/255 caracteres </small>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-back" (click)="voltar()">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Voltar</span>
+        </button>
+        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
+          <span>Cadastrar</span>
+          <mat-icon>check</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

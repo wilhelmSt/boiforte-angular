@@ -11,15 +11,15 @@ type TCorte = {
 };
 
 @Component({
-  selector: 'app-cortes',
-  templateUrl: './cortes.component.html',
-  styleUrls: ['./cortes.component.scss'],
+  selector: 'app-produtos',
+  templateUrl: './produtos.component.html',
+  styleUrls: ['./produtos.component.scss'],
 })
-export class CortesComponent implements OnInit {
-  titleCortes = 'Tabela de Cortes';
-  headersCortes = [
+export class ProdutosComponent implements OnInit {
+  titleProdutos = 'Tabela de Produtos';
+  headersProdutos = [
     {
-      name: 'ID Corte',
+      name: 'ID Produto',
       reference: 'id',
     },
     {

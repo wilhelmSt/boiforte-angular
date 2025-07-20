@@ -10,3 +10,13 @@ export type TEspecie = {
   idCorte: number | string;
   nomeCorte: string;
 };
+
+export type EspecieCorte = Categoria & {
+  corteProduto: Categoria;
+};
+
+type Categoria = {
+  id: number;
+  nome: string;
+  descricao: string;
+};

@@ -23,9 +23,10 @@ const routes: Routes = [
         loadChildren: () => import('./pages/dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
       {
-        path: 'cadastro-corte',
+        path: 'cadastro-produto',
         canActivateChild: [AuthGuard],
-        loadChildren: () => import('./pages/cadastro-corte/cadastro-corte.module').then((m) => m.CadastroCorteModule),
+        loadChildren: () =>
+          import('./pages/cadastro-produto/cadastro-produto.module').then((m) => m.CadastroProdutoModule),
       },
       {
         path: 'cadastro-fornecedor',
@@ -50,9 +51,9 @@ const routes: Routes = [
         loadChildren: () => import('./pages/especies/especies.module').then((m) => m.EspeciesModule),
       },
       {
-        path: 'cortes',
+        path: 'produtos',
         canActivateChild: [AuthGuard],
-        loadChildren: () => import('./pages/cortes/cortes.module').then((m) => m.CortesModule),
+        loadChildren: () => import('./pages/produtos/produtos.module').then((m) => m.ProdutosModule),
       },
       {
         path: 'lotes',
