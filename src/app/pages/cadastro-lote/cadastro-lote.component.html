@@ -68,7 +68,7 @@
         </div>
 
         <div class="form-group">
-          <label>Valor (kg)</label>
+          <label>Valor (kg) *</label>
           <input type="text" formControlName="valor" class="form-control" (input)="formatInput($event, 'valor')" />
           <div *ngIf="cadastroForm.get('valor')?.invalid && cadastroForm.get('valor')?.touched" class="text-danger">
             Valor deve ser positivo
@@ -82,7 +82,8 @@
             [value]="
               cadastroForm.value.quantidade * cadastroForm.value.valor || 0 | currency: 'BRL' : 'symbol' : '1.2-2'
             "
-            class="form-control"
+            disabled
+            class="form-control total-value"
             readonly
           />
         </div>
@@ -99,9 +100,12 @@
           <span>Lotes</span>
         </button>
 
-        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
+        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid || loadingButtonCreate">
           <span>Cadastrar</span>
-          <mat-icon>check</mat-icon>
+
+          <mat-icon *ngIf="loadingButtonCreate" class="rotate-360">refresh</mat-icon>
+
+          <mat-icon *ngIf="!loadingButtonCreate">check</mat-icon>
         </button>
       </div>
     </form>

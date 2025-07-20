@@ -19,7 +19,8 @@ export type Lote = {
 };
 
 export type CreateLoteDto = {
-  produtoId: number;
+  corteId: number;
+  descricao: string;
   fornecedorId: number;
   quantidade?: number;
   custoUnitario: number;
