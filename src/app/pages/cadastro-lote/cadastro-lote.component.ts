@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ProductsTable } from 'src/app/components/products-table/products-table.component';
+import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { SearchResponse, TInfo } from 'src/app/interfaces/geral';
+import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 import { formatInputToMoney } from 'src/app/shared/functions/constants';
 
 @Component({
@@ -12,16 +16,19 @@ export class CadastroLoteComponent implements OnInit {
   cadastroForm!: FormGroup;
 
   tipos = ['gado', 'porco', 'frango'];
-  categorias = ['maminha', 'coxão mole', 'coxão duro', 'coxas', 'peito', 'bisteca'];
-  fornecedores = ['falcao', 'lorena', 'wilhelm'];
+  categorias = ['Maminha', 'Coxão mole', 'Coxão duro', 'Coxas', 'Peito', 'Bisteca'];
+  fornecedores: Fornecedor[] = [];
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private fornecedorService: FornecedorService
   ) {}
 
   ngOnInit() {
     this.initializeForm();
+    this.getAllFornecedores();
   }
 
   initializeForm(): void {
@@ -40,6 +47,18 @@ export class CadastroLoteComponent implements OnInit {
     });
 
     this.calculateTotal();
+  }
+
+  getAllFornecedores(termo = {}) {
+    this.isLoading = true;
+
+    this.fornecedorService.getFornecedoresValidos().subscribe({
+      next: (res: { fornecedoresValidos: Fornecedor[] }) => {
+        this.fornecedores = res.fornecedoresValidos || [];
+      },
+      error: (error) => console.error('Error ao carregar fornecedores'),
+      complete: () => (this.isLoading = false),
+    });
   }
 
   formatInput(event: any, field: string) {

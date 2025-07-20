@@ -32,6 +32,10 @@ export class FornecedorService {
     return this.api.get<{ fornecedoresAtivos: number }>(`${this.endpoint}/fornecedores-ativos`);
   }
 
+  getFornecedoresValidos(): Observable<{ fornecedoresValidos: Fornecedor[] }> {
+    return this.api.get<{ fornecedoresValidos: Fornecedor[] }>(`${this.endpoint}/fornecedores-validos`);
+  }
+
   obterPorId(id: number): Observable<Fornecedor> {
     return this.api.get<Fornecedor>(`${this.endpoint}/${id}`);
   }
