@@ -19,10 +19,15 @@
 
   <div class="table-container">
     <app-products-table
+      *ngIf="lotes && !isLoading"
+      [products]="lotes"
       [title]="titleLotes"
       [headers]="headersLotes"
       [filterChange]="filterChange.bind(this)"
+      (searchTextChange)="onSearchTextChange.bind(this)"
       [searchAvaliable]="true"
+      [isLoading]="isLoading"
+      [(searchText)]="searchText"
     ></app-products-table>
   </div>
 

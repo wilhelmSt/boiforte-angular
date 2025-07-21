@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import * as dayjs from 'dayjs';
+import { ProductsTable } from 'src/app/components/products-table/products-table.component';
+import { SearchResponse } from 'src/app/interfaces/geral';
+import { Lote, SearchLote } from 'src/app/interfaces/lote';
 import { LoteService } from 'src/app/services/lote/lote.service';
 
 type TLote = {};
@@ -18,12 +22,12 @@ export class LotesComponent {
   titleLotes = 'Tabela de Lotes';
   headersLotes = [
     {
-      name: 'ID Corte',
-      reference: 'id',
+      name: 'Corte',
+      reference: 'nomeCorte',
     },
     {
       name: 'Espécie',
-      reference: 'especie',
+      reference: 'nomeEspecie',
     },
     {
       name: 'Vencimento',
@@ -35,14 +39,16 @@ export class LotesComponent {
     },
     {
       name: 'Fornecedor',
-      reference: 'fornecedor',
+      reference: 'nomeFornecedor',
     },
     {
       name: 'status',
       reference: 'status',
     },
   ];
-  lotes: Array<TLote> = [];
+  isLoading: boolean = false;
+  lotes: ProductsTable<Lote> | null = null;
+  searchText: string = '';
   totalProducts = 0;
 
   infos: Info[] = [
@@ -127,13 +133,58 @@ export class LotesComponent {
     });
   }
 
-  getAllLotes() {
-    this.lotes = [];
-    this.totalProducts = this.lotes.length;
+  getAllLotes(termo = {}) {
+    this.isLoading = true;
+
+    this.loteService.buscar(termo).subscribe({
+      next: (res: SearchResponse<Lote>) => {
+        this.lotes = {
+          products:
+            res.data.map((el: any) => {
+              const vencimento = dayjs(el.vencimento);
+              const hoje = dayjs();
+              let status = '';
+
+              if (vencimento.isBefore(hoje, 'day')) {
+                status = 'Vencido';
+              } else if (vencimento.isBefore(hoje.add(2, 'month'), 'day')) {
+                status = 'Perto de vencer';
+              } else {
+                status = 'Em validade';
+              }
+
+              return {
+                ...el,
+                nomeCorte: el.produto?.corte?.nome || '',
+                nomeEspecie: el.produto?.corte?.especieProduto?.nome || '',
+                nomeFornecedor: el.fornecedor?.nome || '',
+                vencimento: vencimento.format('DD/MM/YYYY'),
+                status,
+              };
+            }) || [],
+          total: res.total || 0,
+          pages: res.pages || 0,
+        };
+
+        this.totalProducts = res.total;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error ao carregar lotes: ', err);
+        this.isLoading = false;
+      },
+    });
   }
 
   filterChange(search: string, page: number) {
-    console.log(search, page);
+    const termo: SearchLote = { q: search, page };
+    this.searchText = search;
+    this.getAllLotes(termo);
+  }
+
+  onSearchTextChange(newSearchText: string) {
+    this.searchText = newSearchText;
+    this.filterChange(newSearchText, 1);
   }
 
   voltar() {

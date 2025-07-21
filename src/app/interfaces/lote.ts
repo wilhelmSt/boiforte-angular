@@ -1,3 +1,9 @@
+import { TSearch } from './geral';
+
+export type SearchLote = TSearch & {
+  orderBy?: 'nome' | 'endereco' | 'telefone' | 'ultima_entrada' | 'quantidade_lotes';
+};
+
 export type Lote = {
   id: number;
   quantidade: number;
