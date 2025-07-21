@@ -23,6 +23,14 @@ export class LoteService {
     return this.api.get<Lote[]>(this.endpoint);
   }
 
+  listarTopVencidos(): Observable<Lote[]> {
+    return this.api.get<Lote[]>(`${this.endpoint}/top-vencidos`);
+  }
+
+  listarTopQuaseVencidos(): Observable<Lote[]> {
+    return this.api.get<Lote[]>(`${this.endpoint}/top-almost-vencidos`);
+  }
+
   obterPorId(id: number): Observable<Lote> {
     return this.api.get<Lote>(`${this.endpoint}/${id}`);
   }
