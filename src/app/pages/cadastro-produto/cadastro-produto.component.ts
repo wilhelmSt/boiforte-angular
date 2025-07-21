@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { EspecieCorte } from 'src/app/interfaces/especie';
+import { ToastrService } from 'ngx-toastr';
+import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
+import { CreateProdutoDto } from 'src/app/interfaces/produto';
 import { EspecieService } from 'src/app/services/especie/especie.service';
+import { ProdutoService } from 'src/app/services/produto/produto.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cadastro-produto',
@@ -10,23 +14,28 @@ import { EspecieService } from 'src/app/services/especie/especie.service';
   styleUrls: ['./cadastro-produto.component.scss'],
 })
 export class CadastroProdutoComponent {
+  loadingButtonCreate = false;
   cadastroForm!: FormGroup;
-  cortes: EspecieCorte[] = [];
+  especies: EspecieCorte[] = [];
+  cortesFiltrados: Corte[] = [];
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private especieService: EspecieService
+    private toastr: ToastrService,
+    private especieService: EspecieService,
+    private produtoService: ProdutoService
   ) {}
 
   ngOnInit() {
     this.initializeForm();
-    this.getAllCortes();
+    this.getAllEspecies();
   }
 
   initializeForm(): void {
     this.cadastroForm = this.fb.group({
       codigo: ['', [Validators.minLength(2), Validators.maxLength(20)]],
+      especieId: ['', Validators.required],
       corteId: ['', Validators.required],
       precoPadrao: ['', [Validators.required, Validators.min(0.01)]],
       estoqueMinimo: ['', [Validators.required, Validators.min(0)]],
@@ -39,9 +48,22 @@ export class CadastroProdutoComponent {
     });
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.cadastroForm.valid) {
-      console.log('Dados enviados:', this.cadastroForm.value);
+      const body: CreateProdutoDto = {
+        codigo: this.cadastroForm.get('codigo')?.value || '',
+        precoPadrao: Number(this.cadastroForm.get('precoPadrao')?.value),
+        estoqueMinimo: Number(this.cadastroForm.get('estoqueMinimo')?.value),
+        promocao: this.cadastroForm.get('promocao')?.value || false,
+        precoPromocional: Number(this.cadastroForm.get('precoPromocional')?.value),
+        descontoAtacado: this.cadastroForm.get('descontoAtacado')?.value || false,
+        precoAtacado: Number(this.cadastroForm.get('precoAtacado')?.value),
+        quantidadeAtacado: Number(this.cadastroForm.get('quantidadeAtacado')?.value),
+        corteId: Number(this.cadastroForm.get('corteId')?.value),
+        descricao: this.cadastroForm.get('descricao')?.value || '',
+      };
+
+      await this.createProduto(body);
     } else {
       this.cadastroForm.markAllAsTouched();
     }
@@ -78,13 +100,75 @@ export class CadastroProdutoComponent {
     quantidadeAtacado?.updateValueAndValidity();
   }
 
-  getAllCortes() {
+  getAllEspecies() {
     this.especieService.listCortes().subscribe({
       next: (res) => {
-        this.cortes = res;
+        this.especies = res;
       },
       error: (er) => console.error(er),
     });
+  }
+
+  callSwalConfirm() {
+    Swal.fire({
+      title: 'Produto cadastrado com sucesso!',
+      icon: 'success',
+      cancelButtonText: 'Cadastrar novo produto',
+      confirmButtonText: 'Produtos',
+      showCancelButton: true,
+      reverseButtons: true,
+      customClass: {
+        cancelButton: 'swal2-cancel',
+        confirmButton: 'swal2-confirm',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.voltar();
+      } else if (result.isDismissed) {
+        this.cadastroForm.reset();
+      }
+    });
+  }
+
+  async createProduto(produto: CreateProdutoDto) {
+    this.loadingButtonCreate = true;
+
+    this.produtoService.criar(produto).subscribe({
+      next: (res) => {
+        this.callSwalConfirm();
+      },
+      error: (er) => {
+        console.error(er);
+
+        let errorMessage = 'Erro ao cadastrar produto (contate o suporte).';
+
+        if (er.error?.errors) {
+          errorMessage = '';
+
+          er.error?.errors?.forEach((er: any) => {
+            errorMessage += er.message + '\n';
+          });
+        }
+
+        this.toastr.error(errorMessage, 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+      },
+      complete: () => (this.loadingButtonCreate = false),
+    });
+  }
+
+  onEspecieChange(): void {
+    const especieId = this.cadastroForm.get('especieId')?.value;
+    this.cadastroForm.get('corteId')?.setValue('');
+
+    if (especieId) {
+      const especieSelecionada = this.especies.find((e) => e.id === Number(especieId));
+      this.cortesFiltrados = especieSelecionada?.corteProduto || [];
+    } else {
+      this.cortesFiltrados = [];
+    }
   }
 
   voltar() {

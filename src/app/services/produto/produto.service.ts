@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
-import { CreateProdutoDto, Produto, UpdateProdutoDto } from 'src/app/interfaces/produto';
+import { CreateProdutoDto, Produto, ProdutoRes, UpdateProdutoDto } from 'src/app/interfaces/produto';
+import { SearchResponse, TSearch } from 'src/app/interfaces/geral';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +20,8 @@ export class ProdutoService {
     return this.api.get<Produto[]>(this.endpoint);
   }
 
-  buscar(termo: string): Observable<Produto[]> {
-    return this.api.get<Produto[]>(`${this.endpoint}/search`, { q: termo });
+  buscar(termo?: TSearch): Observable<SearchResponse<ProdutoRes>> {
+    return this.api.get<SearchResponse<ProdutoRes>>(`${this.endpoint}/search`, termo);
   }
 
   obterPorId(id: number): Observable<Produto> {

@@ -2,7 +2,7 @@
   <div class="header">
     <h2>Produtos</h2>
 
-    <button type="button" (click)="navigateToPath('/cadastro-corte')">
+    <button type="button" (click)="navigateToPath('/cadastro-produto')">
       <mat-icon>add</mat-icon>
       Cadastrar
     </button>
@@ -19,10 +19,14 @@
 
   <div class="table-container">
     <app-products-table
+      *ngIf="produtos && !isLoading"
+      [products]="produtos"
       [title]="titleProdutos"
       [headers]="headersProdutos"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
+      [isLoading]="isLoading"
+      [(searchText)]="searchText"
     ></app-products-table>
   </div>
 

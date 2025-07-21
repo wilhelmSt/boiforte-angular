@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
-type TCorte = {
-  id: number;
-  corte: string;
-  especie: string;
-  vencimento: string;
-  quantidade: number;
-  status: string;
-};
+import { ToastrService } from 'ngx-toastr';
+import { ProductsTable } from 'src/app/components/products-table/products-table.component';
+import { SearchResponse, TableHeader, TInfoList } from 'src/app/interfaces/geral';
+import { Produto, ProdutoRes, ProdutoTable, SearchProduto } from 'src/app/interfaces/produto';
+import { ProdutoService } from 'src/app/services/produto/produto.service';
+import { formatDate } from 'src/app/shared/functions/constants';
 
 @Component({
   selector: 'app-produtos',
@@ -17,7 +14,7 @@ type TCorte = {
 })
 export class ProdutosComponent implements OnInit {
   titleProdutos = 'Tabela de Produtos';
-  headersProdutos = [
+  headersProdutos: TableHeader = [
     {
       name: 'ID Produto',
       reference: 'id',
@@ -36,121 +33,87 @@ export class ProdutosComponent implements OnInit {
     },
     {
       name: 'Quantidade (kg)',
-      reference: 'quantidade',
+      reference: 'estoque',
     },
     {
       name: 'status',
       reference: 'status',
     },
   ];
-  cortes: Array<TCorte> = [];
-  totalProducts = 0;
 
-  infos = [
+  produtos: ProductsTable<ProdutoTable> | null = null;
+  isLoading: boolean = false;
+  searchText: string = '';
+
+  infos: TInfoList[] = [
     {
-      title: 'Cortes em falta',
+      title: 'Produtos em falta',
       contents: ['Maminha - Gado', 'Peito - Frango', 'Coxa - Frango'],
     },
     {
-      title: 'Cortes com estoque baixo',
+      title: 'Produtos com estoque baixo',
       contents: ['Maminha - Gado', 'Peito - Frango', 'Coxa - Frango'],
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private toastr: ToastrService,
+    private produtoService: ProdutoService
+  ) {}
 
   ngOnInit() {
-    this.getAllCortes();
+    this.getAllProdutos();
   }
 
-  getAllCortes() {
-    this.cortes = [
-      {
-        id: 1,
-        corte: 'Picanha',
-        especie: 'Bovino',
-        vencimento: '2023-12-15',
-        quantidade: 150,
-        status: 'Alto estoque',
+  getAllProdutos(termo = {}) {
+    this.isLoading = true;
+
+    this.produtoService.buscar(termo).subscribe({
+      next: (res: SearchResponse<ProdutoRes>) => {
+        this.produtos = {
+          products:
+            res.data.map((d) => ({
+              id: d.id,
+              status: this.getEstoqueProduto(d.estoque, d.estoqueMinimo),
+              estoque: d.estoque,
+              preco: d.preco,
+              vencimento: formatDate(d.vencimento),
+              corte: d.corte?.nome,
+              especie: d.corte?.especie?.nome,
+            })) || [],
+          total: res.total || 0,
+          pages: res.pages || 0,
+        };
       },
-      {
-        id: 2,
-        corte: 'Contrafilé',
-        especie: 'Bovino',
-        vencimento: '2023-12-05',
-        quantidade: 80,
-        status: 'Médio estoque',
+      error: (er) => {
+        this.isLoading = false;
+        this.toastr.error('Error ao carregar produtos');
+        console.error('Error ao carregar produtos', er);
       },
-      {
-        id: 3,
-        corte: 'Asa de frango',
-        especie: 'Frango',
-        vencimento: '2023-11-28',
-        quantidade: 200,
-        status: 'Alto estoque',
-      },
-      {
-        id: 4,
-        corte: 'Linguiça',
-        especie: 'Suíno',
-        vencimento: '2023-11-20',
-        quantidade: 30,
-        status: 'Baixo estoque',
-      },
-      {
-        id: 5,
-        corte: 'Costela',
-        especie: 'Bovino',
-        vencimento: '2023-11-15',
-        quantidade: 10,
-        status: 'Em falta',
-      },
-      {
-        id: 6,
-        corte: 'Peito de frango',
-        especie: 'Frango',
-        vencimento: '2023-12-10',
-        quantidade: 5,
-        status: 'Baixo estoque',
-      },
-      {
-        id: 7,
-        corte: 'Bisteca',
-        especie: 'Suíno',
-        vencimento: '2023-12-20',
-        quantidade: 0,
-        status: 'Em falta',
-      },
-      {
-        id: 8,
-        corte: 'Alcatra',
-        especie: 'Bovino',
-        vencimento: '2023-12-08',
-        quantidade: 45,
-        status: 'Médio estoque',
-      },
-      {
-        id: 9,
-        corte: 'Coxa de frango',
-        especie: 'Frango',
-        vencimento: '2023-12-12',
-        quantidade: 120,
-        status: 'Alto estoque',
-      },
-      {
-        id: 10,
-        corte: 'Pernil',
-        especie: 'Suíno',
-        vencimento: '2023-11-30',
-        quantidade: 25,
-        status: 'Baixo estoque',
-      },
-    ];
-    this.totalProducts = this.cortes.length;
+      complete: () => (this.isLoading = false),
+    });
+  }
+
+  getEstoqueProduto(estoque: number, estoqueMinimo: number) {
+    if (estoque > estoqueMinimo) {
+      return 'Alto estoque';
+    } else if (estoque === 0) {
+      return 'Baixo estoque';
+    } else {
+      return 'Médio estoque';
+    }
   }
 
   filterChange(search: string, page: number) {
-    console.log(search, page);
+    const termo: SearchProduto = { q: search, page };
+    this.searchText = search;
+    this.getAllProdutos(termo);
+  }
+
+  onSearchTextChange(newSearchText: string) {
+    this.searchText = newSearchText;
+    this.filterChange(newSearchText, 1);
   }
 
   voltar() {

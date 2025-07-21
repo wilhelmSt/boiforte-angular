@@ -4,7 +4,7 @@
 
     <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
       <div class="grid-form">
-        <div class="form-group">
+        <div class="form-group full-width">
           <label for="codigo">Código</label>
           <input
             id="codigo"
@@ -26,21 +26,37 @@
         </div>
 
         <div class="form-group">
-          <label for="corte">Corte *</label>
-          <select id="corte" formControlName="corteId" class="form-control" required>
-            <option value="" disabled selected>Selecione um corte</option>
-            <option *ngFor="let corte of cortes" [value]="corte.id">
-              {{ corte.nome }}
+          <label for="especie">Espécie *</label>
+          <select id="especie" formControlName="especieId" class="form-control" required (change)="onEspecieChange()">
+            <option value="" disabled selected>Selecione uma espécie</option>
+            <option *ngFor="let especie of especies" [value]="especie.id">
+              {{ especie.nome }}
             </option>
           </select>
           <div
-            *ngIf="
-              cadastroForm.get('corteId')?.invalid &&
-              (cadastroForm.get('corteId')?.touched || cadastroForm.get('corteId')?.dirty)
-            "
+            *ngIf="cadastroForm.get('especieId')?.invalid && cadastroForm.get('especieId')?.touched"
             class="text-danger"
           >
-            <span *ngIf="cadastroForm.get('corteId')?.errors?.['required']"> Corte é obrigatório </span>
+            <span *ngIf="cadastroForm.get('especieId')?.errors?.['required']">Espécie é obrigatória</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="corte">Corte *</label>
+          <select
+            id="corte"
+            formControlName="corteId"
+            class="form-control"
+            required
+            [disabled]="!cadastroForm.get('especieId')?.value"
+          >
+            <option value="" disabled selected>Selecione um corte</option>
+            <option *ngFor="let corte of cortesFiltrados" [value]="corte.id">
+              {{ corte.nome }}
+            </option>
+          </select>
+          <div *ngIf="cadastroForm.get('corteId')?.invalid && cadastroForm.get('corteId')?.touched" class="text-danger">
+            <span *ngIf="cadastroForm.get('corteId')?.errors?.['required']">Corte é obrigatório</span>
           </div>
         </div>
 
@@ -91,8 +107,10 @@
             <span *ngIf="cadastroForm.get('estoqueMinimo')?.errors?.['min']"> Valor não pode ser negativo </span>
           </div>
         </div>
+      </div>
 
-        <div class="form-group">
+      <div class="grid-form">
+        <div class="form-group full-width">
           <label for="promocao">
             <input
               id="promocao"
@@ -130,8 +148,10 @@
             <span *ngIf="cadastroForm.get('precoPromocional')?.errors?.['min']"> Valor mínimo: R$ 0.01 </span>
           </div>
         </div>
+      </div>
 
-        <div class="form-group">
+      <div class="grid-form">
+        <div class="form-group full-width">
           <label for="descontoAtacado">
             <input
               id="descontoAtacado"
@@ -191,18 +211,18 @@
             <span *ngIf="cadastroForm.get('quantidadeAtacado')?.errors?.['min']"> Mínimo 1 unidade </span>
           </div>
         </div>
+      </div>
 
-        <div class="form-group full-width">
-          <label for="descricao">Descrição</label>
-          <textarea
-            id="descricao"
-            formControlName="descricao"
-            class="form-control"
-            rows="3"
-            placeholder="Descrição do produto (opcional)"
-          ></textarea>
-          <small class="char-counter"> {{ cadastroForm.get('descricao')?.value?.length || 0 }}/255 caracteres </small>
-        </div>
+      <div class="form-group full-width">
+        <label for="descricao">Descrição</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          class="form-control"
+          rows="3"
+          placeholder="Descrição do produto (opcional)"
+        ></textarea>
+        <small class="char-counter"> {{ cadastroForm.get('descricao')?.value?.length || 0 }}/255 caracteres </small>
       </div>
 
       <div class="actions">

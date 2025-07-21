@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
-import { Categoria, EspecieCorte } from 'src/app/interfaces/especie';
+import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
 import { Fornecedor } from 'src/app/interfaces/fornecedor';
 import { EspecieService } from 'src/app/services/especie/especie.service';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
@@ -21,7 +21,7 @@ export class CadastroLoteComponent implements OnInit {
   loadingButtonCreate = false;
   fornecedores: Fornecedor[] = [];
   especies: EspecieCorte[] = [];
-  cortes: Categoria[] = [];
+  cortes: Corte[] = [];
   isLoading: boolean = false;
 
   constructor(
