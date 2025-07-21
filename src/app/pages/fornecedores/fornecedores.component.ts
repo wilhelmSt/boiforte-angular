@@ -35,7 +35,11 @@ export class FornecedoresComponent {
     },
   ];
 
-  fornecedores: ProductsTable<Fornecedor> | null = null;
+  fornecedores: ProductsTable<Fornecedor> = {
+    products: [],
+    pages: 0,
+    total: 0,
+  };
   isLoading: boolean = false;
   searchText: string = '';
 
@@ -88,9 +92,13 @@ export class FornecedoresComponent {
   getTopFornecedores() {
     this.fornecedorService.getTopFornecedores().subscribe({
       next: (res) => {
-        this.info.contents = res.map((value) => {
-          return value.nome.slice(0, 100);
-        });
+        if (!res?.length) {
+          this.info.contents = ['Nenhum fornecedor mais de vendas encontrado'];
+        } else {
+          this.info.contents = res.map((value) => {
+            return value.nome.slice(0, 100);
+          });
+        }
       },
       error: (error) => console.error('Error ao carregar top fornecedores'),
     });

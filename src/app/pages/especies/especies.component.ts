@@ -31,7 +31,11 @@ export class EspeciesComponent implements OnInit {
     },
   ];
 
-  especies: ProductsTable<TEspecie> | null = null;
+  especies: ProductsTable<TEspecie> = {
+    products: [],
+    pages: 0,
+    total: 0,
+  };
   isLoading = false;
   searchText: string = '';
 

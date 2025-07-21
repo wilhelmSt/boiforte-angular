@@ -6,8 +6,6 @@ import { SearchResponse } from 'src/app/interfaces/geral';
 import { Lote, SearchLote } from 'src/app/interfaces/lote';
 import { LoteService } from 'src/app/services/lote/lote.service';
 
-type TLote = {};
-
 interface Info {
   title: string;
   contents: string[];
@@ -47,7 +45,11 @@ export class LotesComponent {
     },
   ];
   isLoading: boolean = false;
-  lotes: ProductsTable<Lote> | null = null;
+  lotes: ProductsTable<Lote> = {
+    products: [],
+    total: 0,
+    pages: 0,
+  };
   searchText: string = '';
   totalProducts = 0;
 

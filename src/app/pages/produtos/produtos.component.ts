@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 import { ProductsTable } from 'src/app/components/products-table/products-table.component';
 import { SearchResponse, TableHeader, TInfoList } from 'src/app/interfaces/geral';
-import { Produto, ProdutoRes, ProdutoTable, SearchProduto } from 'src/app/interfaces/produto';
+import { ProdutoRes, ProdutoTable, SearchProduto } from 'src/app/interfaces/produto';
 import { ProdutoService } from 'src/app/services/produto/produto.service';
 import { formatDate } from 'src/app/shared/functions/constants';
 
@@ -41,18 +42,22 @@ export class ProdutosComponent implements OnInit {
     },
   ];
 
-  produtos: ProductsTable<ProdutoTable> | null = null;
+  produtos: ProductsTable<ProdutoTable> = {
+    products: [],
+    total: 0,
+    pages: 0,
+  };
   isLoading: boolean = false;
   searchText: string = '';
 
   infos: TInfoList[] = [
     {
-      title: 'Produtos em falta',
-      contents: ['Maminha - Gado', 'Peito - Frango', 'Coxa - Frango'],
+      title: 'Produtos com estoque baixo',
+      contents: [],
     },
     {
-      title: 'Produtos com estoque baixo',
-      contents: ['Maminha - Gado', 'Peito - Frango', 'Coxa - Frango'],
+      title: 'Produtos em falta',
+      contents: [],
     },
   ];
 
@@ -64,6 +69,7 @@ export class ProdutosComponent implements OnInit {
 
   ngOnInit() {
     this.getAllProdutos();
+    this.getInfos();
   }
 
   getAllProdutos(termo = {}) {
@@ -93,6 +99,49 @@ export class ProdutosComponent implements OnInit {
       },
       complete: () => (this.isLoading = false),
     });
+  }
+
+  getInfos() {
+    this.isLoading = true;
+
+    forkJoin({
+      produtosEstoquesMinimos: this.produtoService.findProdutosEstoqueMinimo(),
+      produtosEstoquesZerado: this.produtoService.findProdutosEstoqueZerado(),
+    }).subscribe({
+      next: (res) => {
+        if (!res.produtosEstoquesMinimos?.length) {
+          this.setNoProdutosEstoqueMinimo();
+        } else {
+          this.infos[0].contents = res.produtosEstoquesMinimos.map((pem) => {
+            return `${pem.corte.especie.nome} - ${pem.corte.nome}`;
+          });
+        }
+
+        if (!res.produtosEstoquesZerado?.length) {
+          this.setNoProdutosEstoqueZerado();
+        } else {
+          this.infos[1].contents = res.produtosEstoquesZerado.map((pez) => {
+            return `${pez.corte.especie.nome} - ${pez.corte.nome}`;
+          });
+        }
+
+        this.isLoading = false;
+      },
+      error: (er) => {
+        console.error('Error ao carregar produtos infos.');
+        this.setNoProdutosEstoqueMinimo();
+        this.setNoProdutosEstoqueZerado();
+        this.isLoading = false;
+      },
+    });
+  }
+
+  setNoProdutosEstoqueMinimo() {
+    this.infos[0].contents = ['Nenhum produto com estoque abaixo do mínimo encontrado.'];
+  }
+
+  setNoProdutosEstoqueZerado() {
+    this.infos[1].contents = ['Nenhum produto com estoque zerado encontrado.'];
   }
 
   getEstoqueProduto(estoque: number, estoqueMinimo: number) {

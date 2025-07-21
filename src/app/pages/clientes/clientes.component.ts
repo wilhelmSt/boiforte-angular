@@ -35,7 +35,11 @@ export class ClientesComponent {
     },
   ];
 
-  clientes: ProductsTable<Cliente> | null = null;
+  clientes: ProductsTable<Cliente> = {
+    products: [],
+    total: 0,
+    pages: 0,
+  };
   isLoading = false;
   searchText: string = '';
 
@@ -53,7 +57,7 @@ export class ClientesComponent {
 
   info: TInfoList = {
     title: 'Top clientes',
-    contents: ['Carlos', 'João Frango', 'Zézin'],
+    contents: [],
   };
 
   constructor(
@@ -88,9 +92,13 @@ export class ClientesComponent {
   getTopClientes() {
     this.clienteService.getTopClientes().subscribe({
       next: (res) => {
-        this.info.contents = res.map((value) => {
-          return value.nome.slice(0, 100);
-        });
+        if (!res?.length) {
+          this.info.contents = ['Nenhum cliente com mais compras encontrado'];
+        } else {
+          this.info.contents = res.map((value) => {
+            return value.nome.slice(0, 100);
+          });
+        }
       },
       error: (error) => console.error('Error ao carregar top clientes'),
     });

@@ -24,6 +24,14 @@ export class ProdutoService {
     return this.api.get<SearchResponse<ProdutoRes>>(`${this.endpoint}/search`, termo);
   }
 
+  findProdutosEstoqueMinimo(): Observable<ProdutoRes[]> {
+    return this.api.get<ProdutoRes[]>(`${this.endpoint}/estoque-baixo`);
+  }
+
+  findProdutosEstoqueZerado(): Observable<ProdutoRes[]> {
+    return this.api.get<ProdutoRes[]>(`${this.endpoint}/estoque-zerado`);
+  }
+
   obterPorId(id: number): Observable<Produto> {
     return this.api.get<Produto>(`${this.endpoint}/${id}`);
   }
