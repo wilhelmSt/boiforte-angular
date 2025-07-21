@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
+import { Categoria, EspecieCorte } from 'src/app/interfaces/especie';
+import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { EspecieService } from 'src/app/services/especie/especie.service';
+import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
+import { LoteService } from 'src/app/services/lote/lote.service';
 import { formatInputToMoney } from 'src/app/shared/functions/constants';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cadastro-lote',
@@ -10,28 +18,51 @@ import { formatInputToMoney } from 'src/app/shared/functions/constants';
 })
 export class CadastroLoteComponent implements OnInit {
   cadastroForm!: FormGroup;
-
-  tipos = ['gado', 'porco', 'frango'];
-  categorias = ['maminha', 'coxão mole', 'coxão duro', 'coxas', 'peito', 'bisteca'];
-  fornecedores = ['falcao', 'lorena', 'wilhelm'];
+  loadingButtonCreate = false;
+  fornecedores: Fornecedor[] = [];
+  especies: EspecieCorte[] = [];
+  cortes: Categoria[] = [];
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private fornecedorService: FornecedorService,
+    private especieService: EspecieService,
+    private loteService: LoteService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
-    this.initializeForm();
+    this.defineForm();
+    this.getInfo();
+  }
+
+  defineForm(): void {
+    this.cadastroForm = this.fb.group({
+      fornecedor: ['', Validators.required],
+      tipo: ['', Validators.required],
+      categoria: ['', Validators.required],
+      validoAte: ['', Validators.required],
+      quantidade: [1, [Validators.required, Validators.min(1)]],
+      valor: [0, [Validators.required, Validators.min(0.01)]],
+      descricao: [''],
+    });
   }
 
   initializeForm(): void {
+    const defaultFornecedor = this.fornecedores.length ? this.fornecedores[0].id : '';
+    const defaultEspecie = this.especies.length ? this.especies[0].id : '';
+    const defaultCorte =
+      this.especies.length && this.especies[0].corteProduto?.length ? this.especies[0].corteProduto[0].id : '';
+
     this.cadastroForm = this.fb.group({
-      fornecedor: ['falcao', Validators.required],
-      tipo: ['gado', Validators.required],
-      categoria: ['maminha', Validators.required],
-      validoAte: [new Date(), Validators.required],
-      quantidade: [200, [Validators.required, Validators.min(1)]],
-      valor: [35, [Validators.required, Validators.min(0.01)]],
+      fornecedor: [defaultFornecedor, Validators.required],
+      tipo: [defaultEspecie, Validators.required],
+      categoria: [defaultCorte, Validators.required],
+      validoAte: ['', Validators.required],
+      quantidade: [1, [Validators.required, Validators.min(1)]],
+      valor: [0, [Validators.required, Validators.min(0.01)]],
       descricao: [''],
     });
 
@@ -40,6 +71,35 @@ export class CadastroLoteComponent implements OnInit {
     });
 
     this.calculateTotal();
+  }
+
+  getInfo() {
+    this.isLoading = true;
+
+    forkJoin({
+      fornecedores: this.fornecedorService.buscar(),
+      cortes: this.especieService.listCortes(),
+    }).subscribe({
+      next: (res) => {
+        this.fornecedores = res.fornecedores.data || [];
+        this.especies = res.cortes || [];
+        this.isLoading = false;
+
+        this.initializeForm();
+
+        if (this.especies.length) {
+          this.onChangeSpecies({ value: this.especies[0]?.id });
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao carregar dados:', error);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  onChangeSpecies(target: any) {
+    this.cortes = this.especies.find(({ id }) => Number(id) === Number(target?.value))?.corteProduto || [];
   }
 
   formatInput(event: any, field: string) {
@@ -58,10 +118,71 @@ export class CadastroLoteComponent implements OnInit {
 
   onSubmit(): void {
     if (this.cadastroForm.valid) {
-      console.log('Dados enviados:', this.cadastroForm.value);
+      this.loadingButtonCreate = true;
+
+      this.loteService
+        .criar({
+          quantidade: Number(this.cadastroForm.value['quantidade']),
+          custoUnitario: Number(this.cadastroForm.value['valor']),
+          custoTotal: this.cadastroForm.value.quantidade * this.cadastroForm.value.valor || 0,
+          vencimento: this.cadastroForm.value['validoAte'] || new Date().toISOString(),
+          corteId: Number(this.cadastroForm.value['categoria']),
+          fornecedorId: Number(this.cadastroForm.value['fornecedor']),
+          descricao: this.cadastroForm.value['descricao'] || '',
+        })
+        .subscribe({
+          next: (res) => {
+            this.callSwalConfirm();
+            this.loadingButtonCreate = false;
+          },
+          error: (error) => {
+            console.error(error);
+
+            let errorMessage = 'Erro ao cadastrar lote (contate o suporte).';
+
+            if (error.error?.errors) {
+              errorMessage = '';
+
+              error.error?.errors?.forEach((er: any) => {
+                errorMessage += er.message + '\n';
+              });
+            }
+
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+
+            this.toastr.error(errorMessage, 'Erro', {
+              timeOut: 5000,
+              closeButton: true,
+            });
+            this.loadingButtonCreate = false;
+          },
+        });
     } else {
       this.cadastroForm.markAllAsTouched();
     }
+  }
+
+  callSwalConfirm() {
+    Swal.fire({
+      title: 'Lote cadastrado com sucesso!',
+      icon: 'success',
+      cancelButtonText: 'Cadastrar novo lote',
+      confirmButtonText: 'Lotes',
+      showCancelButton: true,
+      reverseButtons: true,
+      customClass: {
+        cancelButton: 'swal2-cancel',
+        confirmButton: 'swal2-confirm',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.voltar();
+      } else if (result.isDismissed) {
+        this.cadastroForm.reset();
+      }
+    });
   }
 
   voltar() {

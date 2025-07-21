@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
     "@sweetalert2/ngx-sweetalert2": "^12.4.0",
+    "dayjs": "^1.11.13",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.22.2",

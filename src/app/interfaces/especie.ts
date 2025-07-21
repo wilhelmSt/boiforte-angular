@@ -12,10 +12,10 @@ export type TEspecie = {
 };
 
 export type EspecieCorte = Categoria & {
-  corteProduto: Categoria;
+  corteProduto: Categoria[];
 };
 
-type Categoria = {
+export type Categoria = {
   id: number;
   nome: string;
   descricao: string;
