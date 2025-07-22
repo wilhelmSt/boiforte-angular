@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { Cliente } from 'src/app/interfaces/cliente';
-import { CreateCompraDto, CreateItemCompraDto } from 'src/app/interfaces/compra';
+import { Compra, CreateCompraDto, CreateItemCompraDto } from 'src/app/interfaces/compra';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
 import { Produto } from 'src/app/interfaces/produto';
 import { ClienteService } from 'src/app/services/cliente/cliente.service';
@@ -40,6 +40,9 @@ export class CadastroCompraComponent {
 
   descontoItem: number = 0;
   totalItem: number = 0;
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Compra | null = null;
 
   constructor(
     private router: Router,
@@ -48,8 +51,51 @@ export class CadastroCompraComponent {
     private clienteService: ClienteService,
     private produtoService: ProdutoService,
     private compraService: CompraService,
-    private especieService: EspecieService
-  ) {}
+    private especieService: EspecieService,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+
+      this.updateFormState();
+    });
+  }
+
+  populateForm(data: Compra) {
+    // TO-DO
+  }
+
+  updateFormState(): void {
+    if (this.acao === 'VISUALIZAR') {
+      this.cadastroForm?.disable();
+    } else {
+      this.cadastroForm?.enable();
+    }
+  }
+
+  getById() {
+    this.compraService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+        this.populateForm(this.acaoData);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
+  }
 
   ngOnInit() {
     this.initializeForm();
