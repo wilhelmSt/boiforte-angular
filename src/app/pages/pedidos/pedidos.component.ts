@@ -138,7 +138,7 @@ export class PedidosComponent {
   }
 
   see = (id: number | string) => {
-    this.router.navigate(['/cadastro-lote'], {
+    this.router.navigate(['/cadastro-compra'], {
       queryParams: {
         id: id,
         acao: 'VISUALIZAR',
@@ -147,7 +147,7 @@ export class PedidosComponent {
   };
 
   // edit = (id: number | string) => {
-  //   this.router.navigate(['/cadastro-lote'], {
+  //   this.router.navigate(['/cadastro-compra'], {
   //     queryParams: {
   //       id: id,
   //       acao: 'EDITAR',
