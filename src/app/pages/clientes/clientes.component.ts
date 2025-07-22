@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import * as dayjs from 'dayjs';
 import { ProductsTable } from 'src/app/components/products-table/products-table.component';
 import { Cliente, SearchCliente } from 'src/app/interfaces/cliente';
 import { SearchResponse, TableHeader, TInfo, TInfoList } from 'src/app/interfaces/geral';
@@ -77,7 +78,11 @@ export class ClientesComponent {
     this.clienteService.buscar(termo).subscribe({
       next: (res: SearchResponse<Cliente>) => {
         this.clientes = {
-          products: res.data || [],
+          products:
+            res.data.map((item) => ({
+              ...item,
+              ultimo_pedido: dayjs(item.ultimo_pedido).format('DD/MM/YYYY'),
+            })) || [],
           total: res.total || 0,
           pages: res.pages || 0,
         };
