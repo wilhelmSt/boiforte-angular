@@ -9,6 +9,7 @@ import { RelatorioModalComponent } from 'src/app/modal/relatorio-modal/relatorio
 import { LoteService } from 'src/app/services/lote/lote.service';
 import { ProdutoService } from 'src/app/services/produto/produto.service';
 import { Produto } from 'src/app/interfaces/produto';
+import { CompraService } from 'src/app/services/compra/compra.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,8 +17,8 @@ import { Produto } from 'src/app/interfaces/produto';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
-  pedidos = 90;
-  vendasHoje = 23;
+  pedidos = 0;
+  vendasHoje = 0;
   readonly lotesValidade = 'Validade de lotes';
   readonly cortesEstoque = 'Estoque de cortes';
 
@@ -95,7 +96,8 @@ export class DashboardComponent {
   constructor(
     public dialog: MatDialog,
     private produtoService: ProdutoService,
-    private loteService: LoteService
+    private loteService: LoteService,
+    private compraService: CompraService
   ) {
     this.getInfo();
   }
@@ -104,11 +106,16 @@ export class DashboardComponent {
     this.isLoading = true;
 
     forkJoin({
+      pedidos: this.compraService.contarTodos(),
+      pedidosDoDia: this.compraService.contarTodosDoDia(),
       produtos: this.produtoService.buscar(),
       cortes: this.produtoService.findProdutosEstoqueZerado(),
       lotes: this.loteService.buscar(),
     }).subscribe({
       next: (res) => {
+        this.pedidos = res.pedidos || 0;
+        this.vendasHoje = res.pedidosDoDia || 0;
+
         if (res.cortes.length) {
           this.cortesEmFalta =
             res.cortes.map((prod) => `${prod.corte?.nome || ''} - ${prod.corte?.especie?.nome || ''}`) || [];
