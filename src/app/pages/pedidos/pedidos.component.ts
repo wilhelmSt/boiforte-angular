@@ -104,7 +104,6 @@ export class PedidosComponent {
         this.compras = {
           products:
             res.data.map((el: any) => {
-              console.log(el);
               return {
                 ...el,
                 clienteNome: el.cliente.nome,

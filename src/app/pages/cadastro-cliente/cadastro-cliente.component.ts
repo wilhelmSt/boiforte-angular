@@ -169,8 +169,6 @@ export class CadastroClienteComponent implements OnInit {
         },
         complete: () => (this.loadingButtonCreate = false),
       });
-
-      console.log('Dados enviados:', this.cadastroForm.value);
     } else {
       this.cadastroForm.markAllAsTouched();
     }

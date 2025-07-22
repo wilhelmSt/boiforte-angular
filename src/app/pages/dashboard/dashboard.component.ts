@@ -180,8 +180,6 @@ export class DashboardComponent {
           pages: res.produtos.pages || 0,
         };
 
-        console.log(this.cortes);
-
         this.isLoading = false;
       },
       error: (error) => {
