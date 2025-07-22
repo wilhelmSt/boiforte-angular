@@ -60,7 +60,12 @@ export class CadastroClienteComponent implements OnInit {
   }
 
   populateForm(data: Cliente): void {
-    // TO-DO
+    this.cadastroForm?.get('cpfCnpj')?.setValue(data?.cpfCnpj);
+    this.cadastroForm?.get('email')?.setValue(data?.email);
+    this.cadastroForm?.get('endereço')?.setValue(data?.endereco);
+    this.cadastroForm?.get('nome')?.setValue(data?.nome);
+    this.cadastroForm?.get('observacao')?.setValue(data?.observacao);
+    this.cadastroForm?.get('telefone')?.setValue(data?.telefone);
   }
 
   getById() {
@@ -94,7 +99,31 @@ export class CadastroClienteComponent implements OnInit {
   }
 
   onUpdate(): void {
-    // TO-DO
+    this.loadingButtonCreate = true;
+
+    this.clienteService
+      .atualizar(Number(this.acaoId), {
+        nome: this.cadastroForm?.value?.nome,
+        cpfCnpj: this.cadastroForm?.value?.cpfCnpj,
+        telefone: this.cadastroForm?.value?.telefone,
+        email: this.cadastroForm?.value?.email,
+        endereco: this.cadastroForm?.value?.endereco,
+        observacao: this.cadastroForm?.value?.observacao,
+      })
+      .subscribe({
+        next: () => {
+          this.callSwalConfirmUpdate();
+          this.loadingButtonCreate = false;
+        },
+        error: (err) => {
+          console.error('Não foi possível editar o cliente: ', err);
+          this.toastr.error('Não foi possível editar o cliente: ', 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+          this.loadingButtonCreate = false;
+        },
+      });
   }
 
   onSubmit() {
@@ -147,25 +176,53 @@ export class CadastroClienteComponent implements OnInit {
     }
   }
 
+  callSwalConfirmUpdate() {
+    this.callSwal(
+      {
+        title: 'Cliente atualizado com sucesso!',
+        confirmButtonText: 'Clientes',
+        cancelButtonText: 'Visualizar',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.atualizarQueryParam('acao', 'VISUALIZAR');
+        }
+      }
+    );
+  }
+
   callSwalConfirm() {
+    this.callSwal(
+      {
+        title: 'Cliente cadastrado com sucesso!',
+        confirmButtonText: 'Clientes',
+        cancelButtonText: 'Cadastrar novo cliente',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.cadastroForm.reset();
+        }
+      }
+    );
+  }
+
+  callSwal(data: any, fn: any) {
     Swal.fire({
-      title: 'Cliente cadastrado com sucesso!',
+      title: data.title,
       icon: 'success',
-      cancelButtonText: 'Cadastrar novo cliente',
-      confirmButtonText: 'Clientes',
+      cancelButtonText: data.cancelButtonText,
+      confirmButtonText: data.confirmButtonText,
       showCancelButton: true,
       reverseButtons: true,
       customClass: {
         cancelButton: 'swal2-cancel',
         confirmButton: 'swal2-confirm',
       },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.voltar();
-      } else if (result.isDismissed) {
-        this.cadastroForm.reset();
-      }
-    });
+    }).then(fn);
   }
 
   formatarCpfCnpj(event: any) {

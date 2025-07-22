@@ -62,11 +62,24 @@ export class CadastroProdutoComponent {
       this.cadastroForm?.disable();
     } else {
       this.cadastroForm?.enable();
+      this.cadastroForm?.get('codigo')?.disable();
+      this.cadastroForm?.get('corteId')?.disable();
+      this.cadastroForm?.get('especieId')?.disable();
     }
   }
 
   populateForm(data: Produto): void {
-    // TO-DO
+    this.cadastroForm?.get('codigo')?.setValue(data?.codigo);
+    this.cadastroForm?.get('especieId')?.setValue(data?.corte?.especie?.id);
+    this.cadastroForm?.get('corteId')?.setValue(data?.corte?.id);
+    this.cadastroForm?.get('precoPadrao')?.setValue(data?.precoPadrao);
+    this.cadastroForm?.get('esoqueMinimo')?.setValue(data?.estoqueMinimo);
+    this.cadastroForm?.get('promocao')?.setValue(data?.promocao);
+    this.cadastroForm?.get('precoPromocional')?.setValue(data?.precoPromocional);
+    this.cadastroForm?.get('descontoAtacado')?.setValue(data?.descontoAtacado);
+    this.cadastroForm?.get('precoAtacado')?.setValue(data?.precoAtacado);
+    this.cadastroForm?.get('quantidadeAtacado')?.setValue(data?.quantidadeAtacado);
+    this.cadastroForm?.get('descricao')?.setValue(data?.descricao);
   }
 
   getById() {
@@ -105,7 +118,34 @@ export class CadastroProdutoComponent {
   }
 
   onUpdate(): void {
-    // TO-DO
+    this.loadingButtonCreate = true;
+
+    this.produtoService
+      .atualizar(Number(this.acaoId), {
+        precoPadrao: Number(this.cadastroForm.get('precoPadrao')?.value),
+        estoqueMinimo: Number(this.cadastroForm.get('estoqueMinimo')?.value),
+        promocao: this.cadastroForm.get('promocao')?.value || false,
+        precoPromocional: Number(this.cadastroForm.get('precoPromocional')?.value),
+        descontoAtacado: this.cadastroForm.get('descontoAtacado')?.value || false,
+        precoAtacado: Number(this.cadastroForm.get('precoAtacado')?.value),
+        quantidadeAtacado: Number(this.cadastroForm.get('quantidadeAtacado')?.value),
+        corteId: Number(this.cadastroForm.get('corteId')?.value),
+        descricao: this.cadastroForm.get('descricao')?.value || '',
+      })
+      .subscribe({
+        next: () => {
+          this.callSwalConfirmUpdate();
+          this.loadingButtonCreate = false;
+        },
+        error: (err) => {
+          console.error('Não foi possível editar o produto: ', err);
+          this.toastr.error('Não foi possível editar o produto: ', 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+          this.loadingButtonCreate = false;
+        },
+      });
   }
 
   async onSubmit() {
@@ -169,25 +209,53 @@ export class CadastroProdutoComponent {
     });
   }
 
+  callSwalConfirmUpdate() {
+    this.callSwal(
+      {
+        title: 'Produto atualizado com sucesso!',
+        confirmButtonText: 'Produtos',
+        cancelButtonText: 'Visualizar',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.atualizarQueryParam('acao', 'VISUALIZAR');
+        }
+      }
+    );
+  }
+
   callSwalConfirm() {
+    this.callSwal(
+      {
+        title: 'Produto cadastrado com sucesso!',
+        confirmButtonText: 'Produtos',
+        cancelButtonText: 'Cadastrar novo produto',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.cadastroForm.reset();
+        }
+      }
+    );
+  }
+
+  callSwal(data: any, fn: any) {
     Swal.fire({
-      title: 'Produto cadastrado com sucesso!',
+      title: data.title,
       icon: 'success',
-      cancelButtonText: 'Cadastrar novo produto',
-      confirmButtonText: 'Produtos',
+      cancelButtonText: data.cancelButtonText,
+      confirmButtonText: data.confirmButtonText,
       showCancelButton: true,
       reverseButtons: true,
       customClass: {
         cancelButton: 'swal2-cancel',
         confirmButton: 'swal2-confirm',
       },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.voltar();
-      } else if (result.isDismissed) {
-        this.cadastroForm.reset();
-      }
-    });
+    }).then(fn);
   }
 
   async createProduto(produto: CreateProdutoDto) {

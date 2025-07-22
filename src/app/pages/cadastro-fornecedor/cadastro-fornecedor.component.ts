@@ -60,7 +60,12 @@ export class CadastroFornecedorComponent implements OnInit {
   }
 
   populateForm(data: Fornecedor): void {
-    // TO-DO
+    this.cadastroForm?.get('cpfCnpj')?.setValue(data?.cnpj);
+    this.cadastroForm?.get('email')?.setValue(data?.email);
+    this.cadastroForm?.get('endereço')?.setValue(data?.endereco);
+    this.cadastroForm?.get('nome')?.setValue(data?.nome);
+    this.cadastroForm?.get('observacao')?.setValue(data?.observacao);
+    this.cadastroForm?.get('telefone')?.setValue(data?.telefone);
   }
 
   getById() {
@@ -94,7 +99,31 @@ export class CadastroFornecedorComponent implements OnInit {
   }
 
   onUpdate(): void {
-    // TO-DO
+    this.loadingButtonCreate = true;
+
+    this.fornecedorService
+      .atualizar(Number(this.acaoId), {
+        nome: this.cadastroForm?.value?.nome,
+        cnpj: this.cadastroForm?.value?.cpfCnpj,
+        telefone: this.cadastroForm?.value?.telefone,
+        email: this.cadastroForm?.value?.email,
+        endereco: this.cadastroForm?.value?.endereco,
+        observacao: this.cadastroForm?.value?.observacao,
+      })
+      .subscribe({
+        next: () => {
+          this.callSwalConfirmUpdate();
+          this.loadingButtonCreate = false;
+        },
+        error: (err) => {
+          console.error('Não foi possível editar o fornecedor: ', err);
+          this.toastr.error('Não foi possível editar o fornecedor: ', 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+          this.loadingButtonCreate = false;
+        },
+      });
   }
 
   onSubmit() {
@@ -145,25 +174,53 @@ export class CadastroFornecedorComponent implements OnInit {
     }
   }
 
+  callSwalConfirmUpdate() {
+    this.callSwal(
+      {
+        title: 'Fornecedor atualizado com sucesso!',
+        confirmButtonText: 'Fornecedores',
+        cancelButtonText: 'Visualizar',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.atualizarQueryParam('acao', 'VISUALIZAR');
+        }
+      }
+    );
+  }
+
   callSwalConfirm() {
+    this.callSwal(
+      {
+        title: 'Fornecedor cadastrado com sucesso!',
+        confirmButtonText: 'Fornecedores',
+        cancelButtonText: 'Cadastrar novo fornecedor',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.cadastroForm.reset();
+        }
+      }
+    );
+  }
+
+  callSwal(data: any, fn: any) {
     Swal.fire({
-      title: 'Fornecedor cadastrado com sucesso!',
+      title: data.title,
       icon: 'success',
-      cancelButtonText: 'Cadastrar novo fornecedor',
-      confirmButtonText: 'Fornecedores',
+      cancelButtonText: data.cancelButtonText,
+      confirmButtonText: data.confirmButtonText,
       showCancelButton: true,
       reverseButtons: true,
       customClass: {
         cancelButton: 'swal2-cancel',
         confirmButton: 'swal2-confirm',
       },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.voltar();
-      } else if (result.isDismissed) {
-        this.cadastroForm.reset();
-      }
-    });
+    }).then(fn);
   }
 
   formatarCpfCnpj(event: any) {
