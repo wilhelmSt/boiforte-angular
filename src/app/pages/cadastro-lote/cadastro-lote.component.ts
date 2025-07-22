@@ -66,24 +66,26 @@ export class CadastroLoteComponent implements OnInit {
   }
 
   updateFormState(): void {
-    if (this.acao === 'VISUALIZAR') {
-      this.cadastroForm.disable();
-    } else {
-      this.cadastroForm.enable();
-      this.cadastroForm.get('tipo')?.disable();
-      this.cadastroForm.get('categoria')?.disable();
-      this.cadastroForm.get('fornecedor')?.disable();
+    if (this.acao) {
+      if (this.acao === 'VISUALIZAR') {
+        this.cadastroForm?.disable();
+      } else {
+        this.cadastroForm?.enable();
+        this.cadastroForm?.get('tipo')?.disable();
+        this.cadastroForm?.get('categoria')?.disable();
+        this.cadastroForm?.get('fornecedor')?.disable();
+      }
     }
   }
 
   populateForm(data: any): void {
-    this.cadastroForm.get('fornecedor')?.setValue(data.fornecedorId);
-    this.cadastroForm.get('tipo')?.setValue(data.produto?.corte?.especieProduto?.id);
-    this.cadastroForm.get('categoria')?.setValue(data.produto?.corte?.id);
-    this.cadastroForm.get('validoAte')?.setValue(new Date(dayjs(data.vencimento).format('DD-MM-YYYY')).toISOString());
-    this.cadastroForm.get('quantidade')?.setValue(data.quantidade);
-    this.cadastroForm.get('valor')?.setValue(data.custoUnitario);
-    this.cadastroForm.get('descricao')?.setValue(data.descricao);
+    this.cadastroForm?.get('fornecedor')?.setValue(data.fornecedorId);
+    this.cadastroForm?.get('tipo')?.setValue(data.produto?.corte?.especieProduto?.id);
+    this.cadastroForm?.get('categoria')?.setValue(data.produto?.corte?.id);
+    this.cadastroForm?.get('validoAte')?.setValue(dayjs(data.vencimento).format('YYYY-MM-DD'));
+    this.cadastroForm?.get('quantidade')?.setValue(data.quantidade);
+    this.cadastroForm?.get('valor')?.setValue(data.custoUnitario);
+    this.cadastroForm?.get('descricao')?.setValue(data.descricao);
 
     this.onChangeSpecies({ value: this.cadastroForm.get('tipo')?.value });
   }
