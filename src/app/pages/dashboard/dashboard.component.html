@@ -24,19 +24,25 @@
 
   <div class="table-container">
     <app-products-table
-      [title]="lotes"
+      [products]="lotes"
+      [title]="lotesValidade"
       [headers]="headers"
       [openModalRelatorio]="openModalRelatorio.bind(this)"
       [navigateTo]="'/lotes'"
+      [searchAvaliable]="false"
+      [isLoading]="isLoading"
     ></app-products-table>
   </div>
 
   <div class="table-container">
     <app-products-table
-      [title]="cortes"
+      [products]="cortes"
+      [title]="cortesEstoque"
       [headers]="headers"
       [openModalRelatorio]="openModalRelatorio.bind(this)"
       [navigateTo]="'/cortes'"
+      [searchAvaliable]="false"
+      [isLoading]="isLoading"
     ></app-products-table>
   </div>
 </section>
