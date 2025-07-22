@@ -69,7 +69,15 @@ export class CadastroCompraComponent {
   }
 
   populateForm(data: Compra) {
-    // TO-DO
+    this.cadastroForm.get('clienteId')?.setValue(data?.cliente?.id);
+    this.cadastroForm.get('tipoPagamento')?.setValue(data?.tipoPagamento);
+    this.cadastroForm.get('condicaoPagamento')?.setValue(data?.condicaoPagamento);
+    this.cadastroForm.get('desconto')?.setValue(data?.descontoFinal);
+    this.cadastroForm.get('observacao')?.setValue(data?.observacao);
+    this.cadastroForm.get('valorTotal')?.setValue(data?.valorTotal);
+    this.cadastroForm.get('valorTotalFinal')?.setValue(data?.valorTotalFinal);
+    this.cadastroForm.get('descontoFinal')?.setValue(data?.descontoFinal);
+    this.itens = data.itens as unknown as Array<CreateItemCompraDto & CorteEspecie>;
   }
 
   updateFormState(): void {
