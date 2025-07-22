@@ -48,7 +48,7 @@
             </span>
           </ng-template>
         </td>
-        <td *ngIf="actions?.length" class="actions">
+        <td *ngIf="actions?.length" class="actions" [class]="i === products.products.length - 1 ? 'last-item' : ''">
           <button
             *ngFor="let action of actions"
             [ngClass]="'icon-button ' + action.name + '-button'"
@@ -75,11 +75,11 @@
       {{ page }}
     </span>
 
-    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === products.total">
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === products.pages">
       <mat-icon>chevron_right</mat-icon>
     </button>
 
-    <button (click)="changePage(products.total)" [disabled]="currentPage === products.total">
+    <button (click)="changePage(products.total)" [disabled]="currentPage === products.pages">
       <mat-icon>last_page</mat-icon>
     </button>
   </div>

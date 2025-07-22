@@ -15,9 +15,9 @@ export class CadastrarModalComponent {
     callBackFn: Function;
   }> = [
     {
-      label: 'Cadastrar cortes',
+      label: 'Cadastrar Produtos',
       icon: 'cortes-white.svg',
-      callBackFn: () => this.navigateTo('/cadastro-corte'),
+      callBackFn: () => this.navigateTo('/cadastro-produtos'),
     },
     {
       label: 'Cadastrar lote',
@@ -39,17 +39,17 @@ export class CadastrarModalComponent {
       icon: 'clientes-white.svg',
       callBackFn: () => this.navigateTo('/cadastro-cliente'),
     },
-    {
-      label: 'Gerar relatório Geral',
-      icon: 'excel-file-white.svg',
-      callBackFn: () => {},
-    },
-    {
-      label: 'Configurações gerais',
-      icon: 'configuracoes.svg',
-      isWhite: true,
-      callBackFn: () => {},
-    },
+    // {
+    //   label: 'Gerar relatório Geral',
+    //   icon: 'excel-file-white.svg',
+    //   callBackFn: () => {},
+    // },
+    // {
+    //   label: 'Configurações gerais',
+    //   icon: 'configuracoes.svg',
+    //   isWhite: true,
+    //   callBackFn: () => {},
+    // },
   ];
 
   constructor(

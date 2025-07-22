@@ -19,8 +19,8 @@ import { CompraService } from 'src/app/services/compra/compra.service';
 export class DashboardComponent {
   pedidos = 0;
   vendasHoje = 0;
-  readonly lotesValidade = 'Validade de lotes';
-  readonly cortesEstoque = 'Estoque de cortes';
+  readonly lotesValidade = 'Validade de Lotes';
+  readonly cortesEstoque = 'Estoque de Produtos';
 
   cortesEmFalta: String[] = [];
 
@@ -52,33 +52,9 @@ export class DashboardComponent {
     },
   ];
 
-  validadeLotes = [
-    { id: '001', corte: 'Maminha', especie: 'Gado', vencimento: '2023-12-01', quantidade: 150, status: 'Vencido' },
-    {
-      id: '002',
-      corte: 'Picanha',
-      especie: 'Gado',
-      vencimento: '2023-11-15',
-      quantidade: 20,
-      status: 'Perto de vencer',
-    },
-    {
-      id: '003',
-      corte: 'Peito',
-      especie: 'Frango',
-      vencimento: '2023-12-20',
-      quantidade: 60,
-      status: 'Perto de vencer',
-    },
-    { id: '004', corte: 'Moela', especie: 'Porco', vencimento: '2024-01-05', quantidade: 200, status: 'Vencido' },
-  ];
+  validadeLotes = [];
 
-  estoqueCortes = [
-    { id: '001', corte: 'Maminha', especie: 'Gado', vencimento: '2023-12-01', quantidade: 150, status: 'Alto estoque' },
-    { id: '002', corte: 'Picanha', especie: 'Gado', vencimento: '2023-11-15', quantidade: 20, status: 'Baixo estoque' },
-    { id: '003', corte: 'Peito', especie: 'Frango', vencimento: '2023-12-20', quantidade: 60, status: 'Médio estoque' },
-    { id: '004', corte: 'Moela', especie: 'Porco', vencimento: '2024-01-05', quantidade: 0, status: 'Em falta' },
-  ];
+  estoqueCortes = [];
 
   isLoading: boolean = false;
   cortes: ProductsTable<Produto> = {
@@ -217,7 +193,7 @@ export class DashboardComponent {
     if (!opened) {
       this.dialog.open(CadastrarModalComponent, {
         id,
-        width: '1100px',
+        width: '900px',
         height: 'auto',
         panelClass: 'relatorio-modal',
         closeOnNavigation: true,
