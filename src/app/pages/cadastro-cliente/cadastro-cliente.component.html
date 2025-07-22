@@ -1,6 +1,18 @@
 <section class="section-cadastro-clientes">
   <div class="cadastro-clientes">
-    <h2>{{ getPageTitle() }} de cliente</h2>
+    <h2>
+      {{ getPageTitle() }} de cliente
+
+      <button
+        *ngIf="acao === 'VISUALIZAR'"
+        type="button"
+        class="action-button"
+        (click)="atualizarQueryParam('acao', 'EDITAR')"
+      >
+        Editar
+        <mat-icon>edit</mat-icon>
+      </button>
+    </h2>
 
     <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
       <div class="grid-form">

@@ -1,6 +1,18 @@
 <section class="section-cadastro-lotes">
   <div class="cadastro-lotes">
-    <h2>{{ getPageTitle() }} de Lotes</h2>
+    <h2>
+      {{ getPageTitle() }} de Lotes
+
+      <button
+        *ngIf="acao === 'VISUALIZAR'"
+        type="button"
+        class="action-button"
+        (click)="atualizarQueryParam('acao', 'EDITAR')"
+      >
+        Editar
+        <mat-icon>edit</mat-icon>
+      </button>
+    </h2>
 
     <form [formGroup]="cadastroForm" class="form-cadastro" (ngSubmit)="onSubmit()">
       <div class="grid-form">

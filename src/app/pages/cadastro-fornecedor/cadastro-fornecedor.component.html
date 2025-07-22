@@ -1,6 +1,18 @@
 <section class="section-cadastro-fornecedores">
   <div class="cadastro-fornecedores">
-    <h2>{{ getPageTitle() }} de fornecedor</h2>
+    <h2>
+      {{ getPageTitle() }} de fornecedor
+
+      <button
+        *ngIf="acao === 'VISUALIZAR'"
+        type="button"
+        class="action-button"
+        (click)="atualizarQueryParam('acao', 'EDITAR')"
+      >
+        Editar
+        <mat-icon>edit</mat-icon>
+      </button>
+    </h2>
 
     <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
       <div class="grid-form">

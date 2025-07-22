@@ -34,11 +34,29 @@ export class CadastroFornecedorComponent implements OnInit {
         this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
         this.getById();
       }
+
+      this.updateFormState();
     });
   }
 
   async ngOnInit() {
     this.initializeForm();
+  }
+
+  atualizarQueryParam(param: string, value: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [param]: value },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  updateFormState(): void {
+    if (this.acao === 'VISUALIZAR') {
+      this.cadastroForm.disable();
+    } else {
+      this.cadastroForm.enable();
+    }
   }
 
   getById() {
@@ -66,6 +84,8 @@ export class CadastroFornecedorComponent implements OnInit {
       endereco: [''],
       observacao: [''],
     });
+
+    this.updateFormState();
   }
 
   onSubmit() {

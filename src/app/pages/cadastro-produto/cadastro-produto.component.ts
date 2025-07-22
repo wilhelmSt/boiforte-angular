@@ -39,12 +39,30 @@ export class CadastroProdutoComponent {
         this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
         this.getById();
       }
+
+      this.updateFormState();
     });
   }
 
   ngOnInit() {
     this.initializeForm();
     this.getAllEspecies();
+  }
+
+  atualizarQueryParam(param: string, value: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [param]: value },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  updateFormState(): void {
+    if (this.acao === 'VISUALIZAR') {
+      this.cadastroForm.disable();
+    } else {
+      this.cadastroForm.enable();
+    }
   }
 
   getById() {
@@ -77,6 +95,8 @@ export class CadastroProdutoComponent {
       quantidadeAtacado: ['', [Validators.min(1)]],
       descricao: ['', [Validators.maxLength(255)]],
     });
+
+    this.updateFormState();
   }
 
   async onSubmit() {

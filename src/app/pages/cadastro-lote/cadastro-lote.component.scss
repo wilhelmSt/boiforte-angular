@@ -15,6 +15,32 @@
       margin-bottom: 20px;
       font-weight: 700;
       font-size: 1.5rem;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      button {
+        all: unset;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: white;
+        background-color: #401515;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 8px 12px;
+
+        .mat-icon {
+          color: white;
+          width: 1rem;
+          height: 1rem;
+          font-size: 1rem;
+        }
+      }
     }
 
     .form-cadastro {
@@ -60,11 +86,8 @@
           &:disabled {
             background-color: #f1f1f1;
             color: #999;
-
-            &.total-value {
-              color: #401515;
-              cursor: unset;
-            }
+            color: #401515;
+            cursor: unset;
           }
         }
 
