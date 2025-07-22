@@ -23,11 +23,15 @@
 
   <div class="table-container">
     <app-products-table
+      [products]="compras"
       [title]="titlePedidos"
       [headers]="headersPedidos"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"
-      [actions]="[see, edit]"
+      [actions]="[see]"
+      (searchTextChange)="onSearchTextChange.bind(this)"
+      [isLoading]="isLoading"
+      [(searchText)]="searchText"
     ></app-products-table>
   </div>
 

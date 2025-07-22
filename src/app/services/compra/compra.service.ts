@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../api.service';
 import { Compra, CreateCompraDto, UpdateCompraDto } from 'src/app/interfaces/compra';
 import * as dayjs from 'dayjs';
+import { SearchResponse, TSearch } from 'src/app/interfaces/geral';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,10 @@ export class CompraService {
 
   criar(compra: CreateCompraDto): Observable<Compra> {
     return this.api.post<Compra>(this.endpoint, compra);
+  }
+
+  buscar(termo?: TSearch): Observable<SearchResponse<Compra>> {
+    return this.api.get<SearchResponse<Compra>>(`${this.endpoint}/search`, termo);
   }
 
   listarTodos(): Observable<Compra[]> {
