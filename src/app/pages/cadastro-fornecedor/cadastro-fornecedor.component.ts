@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CreateFornecedorDto } from 'src/app/interfaces/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
@@ -16,6 +16,7 @@ export class CadastroFornecedorComponent implements OnInit {
   loadingButtonCreate = false;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private fornecedorService: FornecedorService,
@@ -143,5 +144,10 @@ export class CadastroFornecedorComponent implements OnInit {
 
   voltar() {
     this.router.navigate(['/fornecedores']);
+  }
+
+  getPageTitle(): string {
+    const acao = this.route.snapshot.queryParamMap.get('acao');
+    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
@@ -25,6 +25,7 @@ export class CadastroLoteComponent implements OnInit {
   isLoading: boolean = false;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private fornecedorService: FornecedorService,
@@ -187,5 +188,10 @@ export class CadastroLoteComponent implements OnInit {
 
   voltar() {
     this.router.navigate(['/lotes']);
+  }
+
+  getPageTitle(): string {
+    const acao = this.route.snapshot.queryParamMap.get('acao');
+    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }

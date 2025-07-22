@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CreateClienteDto } from 'src/app/interfaces/cliente';
 import { ClienteService } from 'src/app/services/cliente/cliente.service';
@@ -16,6 +16,7 @@ export class CadastroClienteComponent implements OnInit {
   loadingButtonCreate = false;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private clienteService: ClienteService,
@@ -145,5 +146,10 @@ export class CadastroClienteComponent implements OnInit {
 
   voltar() {
     this.router.navigate(['/clientes']);
+  }
+
+  getPageTitle(): string {
+    const acao = this.route.snapshot.queryParamMap.get('acao');
+    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }

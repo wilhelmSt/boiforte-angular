@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
 import { CreateProdutoDto } from 'src/app/interfaces/produto';
@@ -20,6 +20,7 @@ export class CadastroProdutoComponent {
   cortesFiltrados: Corte[] = [];
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -173,5 +174,10 @@ export class CadastroProdutoComponent {
 
   voltar() {
     this.router.navigate(['/produtos']);
+  }
+
+  getPageTitle(): string {
+    const acao = this.route.snapshot.queryParamMap.get('acao');
+    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }
