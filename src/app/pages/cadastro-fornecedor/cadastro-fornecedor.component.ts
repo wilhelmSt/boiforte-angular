@@ -59,10 +59,15 @@ export class CadastroFornecedorComponent implements OnInit {
     }
   }
 
+  populateForm(data: Fornecedor): void {
+    // TO-DO
+  }
+
   getById() {
     this.fornecedorService.obterPorId(Number(this.acaoId)).subscribe({
       next: (res) => {
         this.acaoData = res;
+        this.populateForm(this.acaoData);
       },
       error: (err) => {
         console.error('Erro ao buscar ID ' + this.acaoId, err);
@@ -198,5 +203,9 @@ export class CadastroFornecedorComponent implements OnInit {
 
   getPageTitle(): string {
     return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+  }
+
+  getSubmitText(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? '' : 'Salvar') : 'Cadastrar';
   }
 }

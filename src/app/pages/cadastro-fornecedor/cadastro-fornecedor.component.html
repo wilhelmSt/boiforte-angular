@@ -72,8 +72,13 @@
           <span>Fornecedores</span>
         </button>
 
-        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid || loadingButtonCreate">
-          <span>Cadastrar</span>
+        <button
+          *ngIf="acao !== 'VISUALIZAR'"
+          type="submit"
+          class="btn-submit"
+          [disabled]="cadastroForm.invalid || loadingButtonCreate"
+        >
+          <span>{{ getSubmitText() }}</span>
 
           <mat-icon *ngIf="loadingButtonCreate" class="rotate-360">refresh</mat-icon>
 

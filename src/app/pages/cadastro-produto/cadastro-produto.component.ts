@@ -65,10 +65,15 @@ export class CadastroProdutoComponent {
     }
   }
 
+  populateForm(data: Produto): void {
+    // TO-DO
+  }
+
   getById() {
     this.produtoService.obterPorId(Number(this.acaoId)).subscribe({
       next: (res) => {
         this.acaoData = res;
+        this.populateForm(this.acaoData);
       },
       error: (err) => {
         console.error('Erro ao buscar ID ' + this.acaoId, err);
@@ -228,5 +233,9 @@ export class CadastroProdutoComponent {
 
   getPageTitle(): string {
     return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+  }
+
+  getSubmitText(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? '' : 'Salvar') : 'Cadastrar';
   }
 }

@@ -242,8 +242,8 @@
           <mat-icon>arrow_back</mat-icon>
           <span>Voltar</span>
         </button>
-        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
-          <span>Cadastrar</span>
+        <button *ngIf="acao !== 'VISUALIZAR'" type="submit" class="btn-submit" [disabled]="cadastroForm.invalid">
+          <span>{{ getSubmitText() }}</span>
           <mat-icon>check</mat-icon>
         </button>
       </div>

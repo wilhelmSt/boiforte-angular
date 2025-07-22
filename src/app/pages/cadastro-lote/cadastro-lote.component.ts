@@ -72,10 +72,15 @@ export class CadastroLoteComponent implements OnInit {
     }
   }
 
+  populateForm(data: Lote): void {
+    // TO-DO
+  }
+
   getById() {
     this.loteService.obterPorId(Number(this.acaoId)).subscribe({
       next: (res) => {
         this.acaoData = res;
+        if (!this.isLoading) this.populateForm(this.acaoData);
       },
       error: (err) => {
         console.error('Erro ao buscar ID ' + this.acaoId, err);
@@ -139,6 +144,8 @@ export class CadastroLoteComponent implements OnInit {
         this.isLoading = false;
 
         this.initializeForm();
+
+        if (this.acao && this.acaoData) this.populateForm(this.acaoData);
 
         if (this.especies.length) {
           this.onChangeSpecies({ value: this.especies[0]?.id });
@@ -244,5 +251,9 @@ export class CadastroLoteComponent implements OnInit {
 
   getPageTitle(): string {
     return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+  }
+
+  getSubmitText(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? '' : 'Salvar') : 'Cadastrar';
   }
 }
