@@ -109,7 +109,7 @@ export class PedidosComponent {
                 clienteNome: el?.cliente?.nome,
                 data_pedido: dayjs(el.createdAt).format('DD/MM/YYYY'),
                 quantidade: this.getQuantidade(el.itens),
-                valor_pedido: el.valorTotalFinal,
+                valor_pedido: `R$ ${el.valorTotalFinal}`,
               };
             }) || [],
           total: res.total || 0,

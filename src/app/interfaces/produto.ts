@@ -52,7 +52,7 @@ export type ProdutoTable = {
   id: number;
   status: string;
   estoque: number;
-  preco: number;
+  preco: number | string;
   vencimento: Date | string;
   corte: string;
   especie: string;

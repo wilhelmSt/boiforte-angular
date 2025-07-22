@@ -102,6 +102,7 @@ export class ProductsTableComponent<T extends BaseProduct> implements OnInit, On
       'Alto estoque': 'badge-green',
       'Baixo estoque': 'badge-yellow',
       'Em falta': 'badge-dark-red',
+      PAGO: 'badge-green',
     };
 
     return map[status] || '';

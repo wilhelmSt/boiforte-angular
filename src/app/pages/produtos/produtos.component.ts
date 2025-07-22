@@ -83,7 +83,7 @@ export class ProdutosComponent implements OnInit {
               id: d.id,
               status: this.getEstoqueProduto(d.estoque, d.estoqueMinimo),
               estoque: d.estoque,
-              preco: d.preco,
+              preco: `R$ ${d.preco}`,
               vencimento: formatDate(d.vencimento),
               corte: d.corte?.nome,
               especie: d.corte?.especie?.nome,
