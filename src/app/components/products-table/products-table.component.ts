@@ -29,7 +29,7 @@ export class ProductsTableComponent<T extends BaseProduct> implements OnInit, On
   @Input() title: String = '';
   @Input() headers: Array<THeadersTable> = [];
   @Input() navigateTo?: String = '';
-  @Input() actions?: Array<any> = [];
+  @Input() actions?: Array<Function> = [];
   @Input() searchAvaliable?: boolean = false;
   @Input() isLoading: boolean = false;
   @Input() openModalRelatorio?: (products: Array<any>) => void;
@@ -98,6 +98,7 @@ export class ProductsTableComponent<T extends BaseProduct> implements OnInit, On
     const map: Record<string, string> = {
       Vencido: 'badge-red',
       'Perto de vencer': 'badge-yellow',
+      'Em validade': 'badge-green',
       'Alto estoque': 'badge-green',
       'Médio estoque': 'badge-yellow',
       'Baixo estoque': 'badge-red',

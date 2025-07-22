@@ -21,6 +21,7 @@
     <app-products-table
       [products]="produtos"
       [title]="titleProdutos"
+      [actions]="[see, edit]"
       [headers]="headersProdutos"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"

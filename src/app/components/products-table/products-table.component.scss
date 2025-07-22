@@ -132,6 +132,26 @@ $text-primary: #281d1b;
       &.last-item {
         border: none;
       }
+
+      &.actions {
+        display: flex;
+        gap: 0.25rem;
+
+        .icon-button {
+          all: unset;
+          cursor: pointer;
+          padding: 0.25rem;
+          border-radius: 0.25rem;
+          background-color: #401515;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .mat-icon {
+            color: white;
+          }
+        }
+      }
     }
 
     th {

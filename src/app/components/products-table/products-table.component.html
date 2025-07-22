@@ -48,6 +48,16 @@
             </span>
           </ng-template>
         </td>
+        <td *ngIf="actions?.length" class="actions">
+          <button
+            *ngFor="let action of actions"
+            [ngClass]="'icon-button ' + action.name + '-button'"
+            (click)="action(product.id)"
+          >
+            <mat-icon *ngIf="action.toString().includes('VISUALIZAR')">remove_red_eye</mat-icon>
+            <mat-icon *ngIf="action.toString().includes('EDITAR')">edit</mat-icon>
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

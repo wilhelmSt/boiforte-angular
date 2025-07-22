@@ -30,6 +30,7 @@
     <app-products-table
       [products]="fornecedores"
       [title]="titleFornecedores"
+      [actions]="[see, edit]"
       [headers]="headersFornecedores"
       [filterChange]="filterChange.bind(this)"
       [searchAvaliable]="true"

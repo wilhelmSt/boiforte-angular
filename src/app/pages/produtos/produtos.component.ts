@@ -172,4 +172,22 @@ export class ProdutosComponent implements OnInit {
   navigateToPath(path: string) {
     this.router.navigate([path]);
   }
+
+  see = (id: number | string) => {
+    this.router.navigate(['/cadastro-produto'], {
+      queryParams: {
+        id: id,
+        acao: 'VISUALIZAR',
+      },
+    });
+  };
+
+  edit = (id: number | string) => {
+    this.router.navigate(['/cadastro-produto'], {
+      queryParams: {
+        id: id,
+        acao: 'EDITAR',
+      },
+    });
+  };
 }

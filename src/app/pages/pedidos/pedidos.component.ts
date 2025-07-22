@@ -89,4 +89,22 @@ export class PedidosComponent {
   navigateToPath(path: string) {
     this.router.navigate([path]);
   }
+
+  see = (id: number | string) => {
+    this.router.navigate(['/cadastro-lote'], {
+      queryParams: {
+        id: id,
+        acao: 'VISUALIZAR',
+      },
+    });
+  };
+
+  edit = (id: number | string) => {
+    this.router.navigate(['/cadastro-lote'], {
+      queryParams: {
+        id: id,
+        acao: 'EDITAR',
+      },
+    });
+  };
 }
