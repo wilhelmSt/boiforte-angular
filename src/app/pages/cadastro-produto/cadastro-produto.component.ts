@@ -59,9 +59,9 @@ export class CadastroProdutoComponent {
 
   updateFormState(): void {
     if (this.acao === 'VISUALIZAR') {
-      this.cadastroForm.disable();
+      this.cadastroForm?.disable();
     } else {
-      this.cadastroForm.enable();
+      this.cadastroForm?.enable();
     }
   }
 
