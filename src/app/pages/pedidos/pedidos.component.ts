@@ -38,7 +38,7 @@ export class PedidosComponent {
     },
     {
       name: 'Cliente',
-      reference: 'cliente',
+      reference: 'clienteNome',
     },
     {
       name: 'Data pedido',
@@ -92,6 +92,10 @@ export class PedidosComponent {
     this.getAllPedidos();
   }
 
+  getQuantidade(itens: { quantidade: number }[]) {
+    return itens.reduce((total, item) => total + item.quantidade, 0);
+  }
+
   getAllPedidos(termo = {}) {
     this.isLoading = true;
 
@@ -100,8 +104,13 @@ export class PedidosComponent {
         this.compras = {
           products:
             res.data.map((el: any) => {
+              console.log(el);
               return {
                 ...el,
+                clienteNome: el.cliente.nome,
+                data_pedido: dayjs(el.createdAt).format('DD/MM/YYYY'),
+                quantidade: this.getQuantidade(el.itens),
+                valor_pedido: el.valorTotalFinal,
               };
             }) || [],
           total: res.total || 0,
