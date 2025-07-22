@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
-import { CreateProdutoDto } from 'src/app/interfaces/produto';
+import { CreateProdutoDto, Produto } from 'src/app/interfaces/produto';
 import { EspecieService } from 'src/app/services/especie/especie.service';
 import { ProdutoService } from 'src/app/services/produto/produto.service';
 import Swal from 'sweetalert2';
@@ -18,6 +18,9 @@ export class CadastroProdutoComponent {
   cadastroForm!: FormGroup;
   especies: EspecieCorte[] = [];
   cortesFiltrados: Corte[] = [];
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Produto | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,11 +29,38 @@ export class CadastroProdutoComponent {
     private toastr: ToastrService,
     private especieService: EspecieService,
     private produtoService: ProdutoService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+    });
+  }
 
   ngOnInit() {
     this.initializeForm();
     this.getAllEspecies();
+  }
+
+  getById() {
+    this.produtoService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
   }
 
   initializeForm(): void {
@@ -177,7 +207,6 @@ export class CadastroProdutoComponent {
   }
 
   getPageTitle(): string {
-    const acao = this.route.snapshot.queryParamMap.get('acao');
-    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+    return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { CreateFornecedorDto } from 'src/app/interfaces/fornecedor';
+import { CreateFornecedorDto, Fornecedor } from 'src/app/interfaces/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 import Swal from 'sweetalert2';
 
@@ -14,6 +14,9 @@ import Swal from 'sweetalert2';
 export class CadastroFornecedorComponent implements OnInit {
   cadastroForm!: FormGroup;
   loadingButtonCreate = false;
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Fornecedor | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -21,10 +24,37 @@ export class CadastroFornecedorComponent implements OnInit {
     private fb: FormBuilder,
     private fornecedorService: FornecedorService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+    });
+  }
 
   async ngOnInit() {
     this.initializeForm();
+  }
+
+  getById() {
+    this.fornecedorService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
   }
 
   initializeForm(): void {
@@ -147,7 +177,6 @@ export class CadastroFornecedorComponent implements OnInit {
   }
 
   getPageTitle(): string {
-    const acao = this.route.snapshot.queryParamMap.get('acao');
-    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+    return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }

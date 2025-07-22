@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
 import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { Lote } from 'src/app/interfaces/lote';
 import { EspecieService } from 'src/app/services/especie/especie.service';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 import { LoteService } from 'src/app/services/lote/lote.service';
@@ -23,6 +24,9 @@ export class CadastroLoteComponent implements OnInit {
   especies: EspecieCorte[] = [];
   cortes: Corte[] = [];
   isLoading: boolean = false;
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Lote | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,11 +36,38 @@ export class CadastroLoteComponent implements OnInit {
     private especieService: EspecieService,
     private loteService: LoteService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+    });
+  }
 
   ngOnInit() {
     this.defineForm();
     this.getInfo();
+  }
+
+  getById() {
+    this.loteService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
   }
 
   defineForm(): void {
@@ -191,7 +222,6 @@ export class CadastroLoteComponent implements OnInit {
   }
 
   getPageTitle(): string {
-    const acao = this.route.snapshot.queryParamMap.get('acao');
-    return acao ? (acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+    return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
   }
 }
