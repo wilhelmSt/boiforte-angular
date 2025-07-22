@@ -81,7 +81,7 @@ export class ClientesComponent {
           products:
             res.data.map((item) => ({
               ...item,
-              ultimo_pedido: dayjs(item.ultimo_pedido).format('DD/MM/YYYY'),
+              ultimo_pedido: item.ultimo_pedido ? dayjs(item.ultimo_pedido).format('DD/MM/YYYY') : 'Sem pedidos',
             })) || [],
           total: res.total || 0,
           pages: res.pages || 0,

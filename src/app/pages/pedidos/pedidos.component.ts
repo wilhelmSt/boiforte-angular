@@ -106,7 +106,7 @@ export class PedidosComponent {
             res.data.map((el: any) => {
               return {
                 ...el,
-                clienteNome: el.cliente.nome,
+                clienteNome: el?.cliente?.nome,
                 data_pedido: dayjs(el.createdAt).format('DD/MM/YYYY'),
                 quantidade: this.getQuantidade(el.itens),
                 valor_pedido: el.valorTotalFinal,
