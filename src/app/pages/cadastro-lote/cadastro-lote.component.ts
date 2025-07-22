@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as dayjs from 'dayjs';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
@@ -69,11 +70,22 @@ export class CadastroLoteComponent implements OnInit {
       this.cadastroForm.disable();
     } else {
       this.cadastroForm.enable();
+      this.cadastroForm.get('tipo')?.disable();
+      this.cadastroForm.get('categoria')?.disable();
+      this.cadastroForm.get('fornecedor')?.disable();
     }
   }
 
-  populateForm(data: Lote): void {
-    // TO-DO
+  populateForm(data: any): void {
+    this.cadastroForm.get('fornecedor')?.setValue(data.fornecedorId);
+    this.cadastroForm.get('tipo')?.setValue(data.produto?.corte?.especieProduto?.id);
+    this.cadastroForm.get('categoria')?.setValue(data.produto?.corte?.id);
+    this.cadastroForm.get('validoAte')?.setValue(new Date(dayjs(data.vencimento).format('DD-MM-YYYY')).toISOString());
+    this.cadastroForm.get('quantidade')?.setValue(data.quantidade);
+    this.cadastroForm.get('valor')?.setValue(data.custoUnitario);
+    this.cadastroForm.get('descricao')?.setValue(data.descricao);
+
+    this.onChangeSpecies({ value: this.cadastroForm.get('tipo')?.value });
   }
 
   getById() {
@@ -176,22 +188,51 @@ export class CadastroLoteComponent implements OnInit {
     this.cadastroForm.patchValue({ valorTotal }, { emitEvent: false });
   }
 
+  getFormData() {
+    return {
+      quantidade: Number(this.cadastroForm.value['quantidade']),
+      custoUnitario: Number(this.cadastroForm.value['valor']),
+      custoTotal: this.cadastroForm.value.quantidade * this.cadastroForm.value.valor || 0,
+      vencimento: this.cadastroForm.value['validoAte'] || new Date().toISOString(),
+      descricao: this.cadastroForm.value['descricao'] || '',
+    };
+  }
+
+  onUpdate(): void {
+    if (this.cadastroForm.valid) {
+      this.loadingButtonCreate = true;
+
+      this.loteService.atualizar(Number(this.acaoId), this.getFormData()).subscribe({
+        next: () => {
+          this.callSwalConfirmUpdate();
+          this.loadingButtonCreate = false;
+        },
+        error: (err) => {
+          console.error('Faha ao editar Lote: ', err);
+          this.toastr.error('Falha ao editar Lote', 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+          this.loadingButtonCreate = false;
+        },
+      });
+    } else {
+      this.cadastroForm.markAllAsTouched();
+    }
+  }
+
   onSubmit(): void {
     if (this.cadastroForm.valid) {
       this.loadingButtonCreate = true;
 
       this.loteService
         .criar({
-          quantidade: Number(this.cadastroForm.value['quantidade']),
-          custoUnitario: Number(this.cadastroForm.value['valor']),
-          custoTotal: this.cadastroForm.value.quantidade * this.cadastroForm.value.valor || 0,
-          vencimento: this.cadastroForm.value['validoAte'] || new Date().toISOString(),
+          ...this.getFormData(),
           corteId: Number(this.cadastroForm.value['categoria']),
           fornecedorId: Number(this.cadastroForm.value['fornecedor']),
-          descricao: this.cadastroForm.value['descricao'] || '',
         })
         .subscribe({
-          next: (res) => {
+          next: () => {
             this.callSwalConfirm();
             this.loadingButtonCreate = false;
           },
@@ -224,25 +265,53 @@ export class CadastroLoteComponent implements OnInit {
     }
   }
 
+  callSwalConfirmUpdate() {
+    this.callSwal(
+      {
+        title: 'Lote editado com sucesso!',
+        confirmButtonText: 'Lotes',
+        cancelButtonText: 'Visualizar',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.atualizarQueryParam('acao', 'VISUALIZAR');
+        }
+      }
+    );
+  }
+
   callSwalConfirm() {
+    this.callSwal(
+      {
+        title: 'Lote cadastrado com sucesso!',
+        confirmButtonText: 'Lotes',
+        cancelButtonText: 'Cadastrar novo lote',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.cadastroForm.reset();
+        }
+      }
+    );
+  }
+
+  callSwal(data: any, fn: any) {
     Swal.fire({
-      title: 'Lote cadastrado com sucesso!',
+      title: data.title,
       icon: 'success',
-      cancelButtonText: 'Cadastrar novo lote',
-      confirmButtonText: 'Lotes',
+      cancelButtonText: data.cancelButtonText,
+      confirmButtonText: data.confirmButtonText,
       showCancelButton: true,
       reverseButtons: true,
       customClass: {
         cancelButton: 'swal2-cancel',
         confirmButton: 'swal2-confirm',
       },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.voltar();
-      } else if (result.isDismissed) {
-        this.cadastroForm.reset();
-      }
-    });
+    }).then(fn);
   }
 
   voltar() {

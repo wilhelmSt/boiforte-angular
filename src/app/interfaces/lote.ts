@@ -22,6 +22,7 @@ export type Lote = {
     id: number;
     nome: string;
   };
+  descricao: string;
 };
 
 export type CreateLoteDto = {

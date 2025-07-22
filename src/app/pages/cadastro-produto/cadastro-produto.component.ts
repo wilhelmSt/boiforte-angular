@@ -104,6 +104,10 @@ export class CadastroProdutoComponent {
     this.updateFormState();
   }
 
+  onUpdate(): void {
+    // TO-DO
+  }
+
   async onSubmit() {
     if (this.cadastroForm.valid) {
       const body: CreateProdutoDto = {

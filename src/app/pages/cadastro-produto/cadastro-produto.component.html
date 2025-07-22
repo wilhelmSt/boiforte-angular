@@ -14,7 +14,7 @@
       </button>
     </h2>
 
-    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="!acao ? onSubmit() : onUpdate()">
       <div class="grid-form">
         <div class="form-group full-width">
           <label for="codigo">Código</label>

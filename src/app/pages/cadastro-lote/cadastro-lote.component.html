@@ -14,7 +14,7 @@
       </button>
     </h2>
 
-    <form [formGroup]="cadastroForm" class="form-cadastro" (ngSubmit)="onSubmit()">
+    <form [formGroup]="cadastroForm" class="form-cadastro" (ngSubmit)="!acao ? onSubmit() : onUpdate()">
       <div class="grid-form">
         <div class="form-group">
           <label>Fornecedor do lote *</label>

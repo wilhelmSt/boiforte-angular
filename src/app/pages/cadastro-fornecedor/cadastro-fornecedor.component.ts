@@ -93,6 +93,10 @@ export class CadastroFornecedorComponent implements OnInit {
     this.updateFormState();
   }
 
+  onUpdate(): void {
+    // TO-DO
+  }
+
   onSubmit() {
     if (this.cadastroForm.valid) {
       this.loadingButtonCreate = true;
