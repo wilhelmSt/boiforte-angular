@@ -1,8 +1,20 @@
 <section class="section-cadastro-clientes">
   <div class="cadastro-clientes">
-    <h2>Cadastro de cliente</h2>
+    <h2>
+      {{ getPageTitle() }} de cliente
 
-    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+      <button
+        *ngIf="acao === 'VISUALIZAR'"
+        type="button"
+        class="action-button"
+        (click)="atualizarQueryParam('acao', 'EDITAR')"
+      >
+        Editar
+        <mat-icon>edit</mat-icon>
+      </button>
+    </h2>
+
+    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="!acao ? onSubmit() : onUpdate()">
       <div class="grid-form">
         <div class="form-group">
           <label>Nome/Razão Social *</label>
@@ -60,8 +72,13 @@
           <span>Clientes</span>
         </button>
 
-        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid || loadingButtonCreate">
-          <span>Cadastrar</span>
+        <button
+          *ngIf="acao !== 'VISUALIZAR'"
+          type="submit"
+          class="btn-submit"
+          [disabled]="cadastroForm.invalid || loadingButtonCreate"
+        >
+          <span>{{ getSubmitText() }}</span>
 
           <mat-icon *ngIf="loadingButtonCreate" class="rotate-360">refresh</mat-icon>
 

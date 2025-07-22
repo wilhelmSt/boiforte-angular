@@ -135,6 +135,24 @@ export class LotesComponent {
     });
   }
 
+  see = (id: number | string) => {
+    this.router.navigate(['/cadastro-lote'], {
+      queryParams: {
+        id: id,
+        acao: 'VISUALIZAR',
+      },
+    });
+  };
+
+  edit = (id: number | string) => {
+    this.router.navigate(['/cadastro-lote'], {
+      queryParams: {
+        id: id,
+        acao: 'EDITAR',
+      },
+    });
+  };
+
   getAllLotes(termo = {}) {
     this.isLoading = true;
 

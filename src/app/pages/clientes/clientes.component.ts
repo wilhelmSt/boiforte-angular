@@ -131,4 +131,22 @@ export class ClientesComponent {
   navigateToPath(path: string) {
     this.router.navigate([path]);
   }
+
+  see = (id: number | string) => {
+    this.router.navigate(['/cadastro-cliente'], {
+      queryParams: {
+        id: id,
+        acao: 'VISUALIZAR',
+      },
+    });
+  };
+
+  edit = (id: number | string) => {
+    this.router.navigate(['/cadastro-cliente'], {
+      queryParams: {
+        id: id,
+        acao: 'EDITAR',
+      },
+    });
+  };
 }

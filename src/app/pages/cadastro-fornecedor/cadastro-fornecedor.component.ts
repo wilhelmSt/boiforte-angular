@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { CreateFornecedorDto } from 'src/app/interfaces/fornecedor';
+import { CreateFornecedorDto, Fornecedor } from 'src/app/interfaces/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 import Swal from 'sweetalert2';
 
@@ -14,16 +14,70 @@ import Swal from 'sweetalert2';
 export class CadastroFornecedorComponent implements OnInit {
   cadastroForm!: FormGroup;
   loadingButtonCreate = false;
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Fornecedor | null = null;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private fornecedorService: FornecedorService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+
+      this.updateFormState();
+    });
+  }
 
   async ngOnInit() {
     this.initializeForm();
+  }
+
+  atualizarQueryParam(param: string, value: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [param]: value },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  updateFormState(): void {
+    if (this.acao === 'VISUALIZAR') {
+      this.cadastroForm.disable();
+    } else {
+      this.cadastroForm.enable();
+    }
+  }
+
+  populateForm(data: Fornecedor): void {
+    // TO-DO
+  }
+
+  getById() {
+    this.fornecedorService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+        this.populateForm(this.acaoData);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
   }
 
   initializeForm(): void {
@@ -35,6 +89,12 @@ export class CadastroFornecedorComponent implements OnInit {
       endereco: [''],
       observacao: [''],
     });
+
+    this.updateFormState();
+  }
+
+  onUpdate(): void {
+    // TO-DO
   }
 
   onSubmit() {
@@ -143,5 +203,13 @@ export class CadastroFornecedorComponent implements OnInit {
 
   voltar() {
     this.router.navigate(['/fornecedores']);
+  }
+
+  getPageTitle(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+  }
+
+  getSubmitText(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? '' : 'Salvar') : 'Cadastrar';
   }
 }

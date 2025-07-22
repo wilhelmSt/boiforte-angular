@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import * as dayjs from 'dayjs';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { Corte, EspecieCorte } from 'src/app/interfaces/especie';
 import { Fornecedor } from 'src/app/interfaces/fornecedor';
+import { Lote } from 'src/app/interfaces/lote';
 import { EspecieService } from 'src/app/services/especie/especie.service';
 import { FornecedorService } from 'src/app/services/fornecedor/fornecedor.service';
 import { LoteService } from 'src/app/services/lote/lote.service';
@@ -23,19 +25,86 @@ export class CadastroLoteComponent implements OnInit {
   especies: EspecieCorte[] = [];
   cortes: Corte[] = [];
   isLoading: boolean = false;
+  acao: 'VISUALIZAR' | 'EDITAR' | null = null;
+  acaoId: string | number | null = null;
+  acaoData: Lote | null = null;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private fornecedorService: FornecedorService,
     private especieService: EspecieService,
     private loteService: LoteService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['acao']) {
+        this.acao = params['acao'] === 'VISUALIZAR' ? 'VISUALIZAR' : 'EDITAR';
+      }
+
+      if (params['id']) {
+        this.acaoId = isNaN(Number(params['id'])) ? Number(params['id']) : params['id'];
+        this.getById();
+      }
+
+      this.updateFormState();
+    });
+  }
 
   ngOnInit() {
     this.defineForm();
     this.getInfo();
+  }
+
+  atualizarQueryParam(param: string, value: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [param]: value },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  updateFormState(): void {
+    if (this.acao) {
+      if (this.acao === 'VISUALIZAR') {
+        this.cadastroForm?.disable();
+      } else {
+        this.cadastroForm?.enable();
+        this.cadastroForm?.get('tipo')?.disable();
+        this.cadastroForm?.get('categoria')?.disable();
+        this.cadastroForm?.get('fornecedor')?.disable();
+      }
+    }
+  }
+
+  populateForm(data: any): void {
+    this.cadastroForm?.get('fornecedor')?.setValue(data.fornecedorId);
+    this.cadastroForm?.get('tipo')?.setValue(data.produto?.corte?.especieProduto?.id);
+    this.cadastroForm?.get('categoria')?.setValue(data.produto?.corte?.id);
+    this.cadastroForm?.get('validoAte')?.setValue(dayjs(data.vencimento).format('YYYY-MM-DD'));
+    this.cadastroForm?.get('quantidade')?.setValue(data.quantidade);
+    this.cadastroForm?.get('valor')?.setValue(data.custoUnitario);
+    this.cadastroForm?.get('descricao')?.setValue(data.descricao);
+
+    this.onChangeSpecies({ value: this.cadastroForm.get('tipo')?.value });
+  }
+
+  getById() {
+    this.loteService.obterPorId(Number(this.acaoId)).subscribe({
+      next: (res) => {
+        this.acaoData = res;
+        if (!this.isLoading) this.populateForm(this.acaoData);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar ID ' + this.acaoId, err);
+        this.toastr.error('Não foi possível buscar os dados desejados, tente novamente mais tarde', 'Erro', {
+          timeOut: 5000,
+          closeButton: true,
+        });
+        this.voltar();
+      },
+    });
   }
 
   defineForm(): void {
@@ -48,6 +117,8 @@ export class CadastroLoteComponent implements OnInit {
       valor: [0, [Validators.required, Validators.min(0.01)]],
       descricao: [''],
     });
+
+    this.updateFormState();
   }
 
   initializeForm(): void {
@@ -71,6 +142,7 @@ export class CadastroLoteComponent implements OnInit {
     });
 
     this.calculateTotal();
+    this.updateFormState();
   }
 
   getInfo() {
@@ -86,6 +158,8 @@ export class CadastroLoteComponent implements OnInit {
         this.isLoading = false;
 
         this.initializeForm();
+
+        if (this.acao && this.acaoData) this.populateForm(this.acaoData);
 
         if (this.especies.length) {
           this.onChangeSpecies({ value: this.especies[0]?.id });
@@ -116,22 +190,51 @@ export class CadastroLoteComponent implements OnInit {
     this.cadastroForm.patchValue({ valorTotal }, { emitEvent: false });
   }
 
+  getFormData() {
+    return {
+      quantidade: Number(this.cadastroForm.value['quantidade']),
+      custoUnitario: Number(this.cadastroForm.value['valor']),
+      custoTotal: this.cadastroForm.value.quantidade * this.cadastroForm.value.valor || 0,
+      vencimento: this.cadastroForm.value['validoAte'] || new Date().toISOString(),
+      descricao: this.cadastroForm.value['descricao'] || '',
+    };
+  }
+
+  onUpdate(): void {
+    if (this.cadastroForm.valid) {
+      this.loadingButtonCreate = true;
+
+      this.loteService.atualizar(Number(this.acaoId), this.getFormData()).subscribe({
+        next: () => {
+          this.callSwalConfirmUpdate();
+          this.loadingButtonCreate = false;
+        },
+        error: (err) => {
+          console.error('Faha ao editar Lote: ', err);
+          this.toastr.error('Falha ao editar Lote', 'Erro', {
+            timeOut: 5000,
+            closeButton: true,
+          });
+          this.loadingButtonCreate = false;
+        },
+      });
+    } else {
+      this.cadastroForm.markAllAsTouched();
+    }
+  }
+
   onSubmit(): void {
     if (this.cadastroForm.valid) {
       this.loadingButtonCreate = true;
 
       this.loteService
         .criar({
-          quantidade: Number(this.cadastroForm.value['quantidade']),
-          custoUnitario: Number(this.cadastroForm.value['valor']),
-          custoTotal: this.cadastroForm.value.quantidade * this.cadastroForm.value.valor || 0,
-          vencimento: this.cadastroForm.value['validoAte'] || new Date().toISOString(),
+          ...this.getFormData(),
           corteId: Number(this.cadastroForm.value['categoria']),
           fornecedorId: Number(this.cadastroForm.value['fornecedor']),
-          descricao: this.cadastroForm.value['descricao'] || '',
         })
         .subscribe({
-          next: (res) => {
+          next: () => {
             this.callSwalConfirm();
             this.loadingButtonCreate = false;
           },
@@ -164,28 +267,64 @@ export class CadastroLoteComponent implements OnInit {
     }
   }
 
+  callSwalConfirmUpdate() {
+    this.callSwal(
+      {
+        title: 'Lote editado com sucesso!',
+        confirmButtonText: 'Lotes',
+        cancelButtonText: 'Visualizar',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.atualizarQueryParam('acao', 'VISUALIZAR');
+        }
+      }
+    );
+  }
+
   callSwalConfirm() {
+    this.callSwal(
+      {
+        title: 'Lote cadastrado com sucesso!',
+        confirmButtonText: 'Lotes',
+        cancelButtonText: 'Cadastrar novo lote',
+      },
+      (result: any) => {
+        if (result.isConfirmed) {
+          this.voltar();
+        } else if (result.isDismissed) {
+          this.cadastroForm.reset();
+        }
+      }
+    );
+  }
+
+  callSwal(data: any, fn: any) {
     Swal.fire({
-      title: 'Lote cadastrado com sucesso!',
+      title: data.title,
       icon: 'success',
-      cancelButtonText: 'Cadastrar novo lote',
-      confirmButtonText: 'Lotes',
+      cancelButtonText: data.cancelButtonText,
+      confirmButtonText: data.confirmButtonText,
       showCancelButton: true,
       reverseButtons: true,
       customClass: {
         cancelButton: 'swal2-cancel',
         confirmButton: 'swal2-confirm',
       },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.voltar();
-      } else if (result.isDismissed) {
-        this.cadastroForm.reset();
-      }
-    });
+    }).then(fn);
   }
 
   voltar() {
     this.router.navigate(['/lotes']);
+  }
+
+  getPageTitle(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? 'Visualização' : 'Edição') : 'Cadastro';
+  }
+
+  getSubmitText(): string {
+    return this.acao ? (this.acao === 'VISUALIZAR' ? '' : 'Salvar') : 'Cadastrar';
   }
 }
