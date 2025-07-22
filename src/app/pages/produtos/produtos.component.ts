@@ -148,9 +148,9 @@ export class ProdutosComponent implements OnInit {
     if (estoque > estoqueMinimo) {
       return 'Alto estoque';
     } else if (estoque === 0) {
-      return 'Baixo estoque';
+      return 'Em falta';
     } else {
-      return 'Médio estoque';
+      return 'Baixo estoque';
     }
   }
 

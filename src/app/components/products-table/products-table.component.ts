@@ -100,8 +100,7 @@ export class ProductsTableComponent<T extends BaseProduct> implements OnInit, On
       'Perto de vencer': 'badge-yellow',
       'Em validade': 'badge-green',
       'Alto estoque': 'badge-green',
-      'Médio estoque': 'badge-yellow',
-      'Baixo estoque': 'badge-red',
+      'Baixo estoque': 'badge-yellow',
       'Em falta': 'badge-dark-red',
     };
 

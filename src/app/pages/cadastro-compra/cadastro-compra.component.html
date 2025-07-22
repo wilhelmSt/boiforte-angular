@@ -1,0 +1,244 @@
+<section class="section-cadastro-compras">
+  <div class="cadastro-compras">
+    <h2>Cadastro de Compras</h2>
+
+    <form class="form-cadastro" [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+      <div class="grid-form">
+        <div class="form-group full-width">
+          <label for="cliente">Cliente *</label>
+          <select id="cliente" formControlName="clienteId" class="form-control" required>
+            <option value="" disabled selected>Selecione um cliente</option>
+            <option *ngFor="let cliente of clientes" [value]="cliente.id">
+              {{ cliente.nome }}
+            </option>
+          </select>
+          <div
+            *ngIf="cadastroForm.get('clienteId')?.invalid && cadastroForm.get('clienteId')?.touched"
+            class="text-danger"
+          >
+            <span *ngIf="cadastroForm.get('clienteId')?.errors?.['required']">Cliente é obrigatório</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="tipoPagamento">Tipo de Pagamento *</label>
+          <select
+            id="tipoPagamento"
+            formControlName="tipoPagamento"
+            class="form-control"
+            required
+            (change)="onTipoPagamentoChange()"
+          >
+            <option value="DINHEIRO">Dinheiro</option>
+            <option value="CARTAO">Cartão</option>
+            <option value="PIX">PIX</option>
+            <option value="BOLETO">Boleto</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="condicaoPagamento">Condição de Pagamento *</label>
+          <select
+            id="condicaoPagamento"
+            formControlName="condicaoPagamento"
+            class="form-control"
+            required
+            [disabled]="!cadastroForm.get('tipoPagamento')?.value"
+          >
+            <option value="A_VISTA">À Vista</option>
+            <option value="PARCELADO" [disabled]="cadastroForm.get('tipoPagamento')?.value !== 'CARTAO'">
+              Parcelado
+            </option>
+          </select>
+          <div *ngIf="cadastroForm.get('condicaoPagamento')?.errors?.['invalidCondition']" class="text-danger">
+            Parcelamento só disponível para pagamento com cartão
+          </div>
+        </div>
+      </div>
+
+      <h3>Itens</h3>
+
+      <div class="itens-compra">
+        <div class="grid-form">
+          <div class="form-group">
+            <label>Espécie *</label>
+            <select formControlName="especie" class="form-control" (change)="onChangeSpecies($event.target)">
+              <option *ngFor="let especie of especies" [value]="especie.id">{{ especie.nome }}</option>
+
+              <option *ngIf="!especies?.length && !isLoading" [value]="">Nenhuma espécie encontrada</option>
+              <option *ngIf="!especies?.length && isLoading" [value]="">Carregando...</option>
+            </select>
+            <div
+              *ngIf="cadastroForm.get('especie')?.invalid && cadastroForm.get('especie')?.touched"
+              class="text-danger"
+            >
+              Espécie é obrigatória
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Corte *</label>
+            <select formControlName="corte" class="form-control" (change)="onChangeCortes($event.target)">
+              <option *ngFor="let corte of cortes" [value]="corte.id">{{ corte.nome }}</option>
+
+              <option *ngIf="!cortes?.length && !isLoading" [value]="">Nenhum corte encontrado</option>
+              <option *ngIf="!cortes?.length && isLoading" [value]="">Carregando...</option>
+            </select>
+            <div *ngIf="cadastroForm.get('corte')?.invalid && cadastroForm.get('corte')?.touched" class="text-danger">
+              Corte é obrigatório
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-form-4">
+          <div class="form-group">
+            <label for="quantidade">Quantidade (Kg) *</label>
+            <input
+              id="quantidade"
+              type="number"
+              class="form-control"
+              formControlName="quantidade_item"
+              placeholder="0"
+              min="0.01"
+              step="0.01"
+              [disabled]="adicionandoItem"
+              (change)="calcularTotalItem()"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="preco">Preço Unitário *</label>
+
+            <span class="valorCompra">R$ {{ precoItem | number: '1.2-2' }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="descontoItem">Desconto Item (R$)</label>
+            <input
+              id="descontoItem"
+              type="number"
+              class="form-control"
+              formControlName="desconto_item"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              [disabled]="adicionandoItem"
+              (change)="calcularTotalItem()"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Total Item</label>
+            <span class="valorCompra">R$ {{ totalItem | number: '1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group actions-item">
+        <button type="button" class="btn-add" [disabled]="adicionandoItem" (click)="adicionarItem()">
+          <mat-icon>add</mat-icon>
+          Adicionar
+        </button>
+      </div>
+
+      <div class="itens-adicionados">
+        <div class="item-produto" *ngFor="let produto of itens; let i = index">
+          <div class="detalhes-produto">
+            <span>{{ produto.especie }}</span>
+            <span>{{ produto.corte }}</span>
+          </div>
+
+          <div class="info-produto">
+            <span class="quantidade">{{ produto.quantidade }}</span>
+            <span class="preco">{{ produto.total }}</span>
+          </div>
+
+          <button class="btn-remover-item" (click)="removerItem(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-form">
+        <div class="form-group">
+          <label for="desconto">Desconto (R$)</label>
+          <input
+            id="desconto"
+            type="number"
+            formControlName="desconto"
+            class="form-control"
+            placeholder="0.00"
+            min="0"
+            step="0.01"
+            (change)="atualizarTotais()"
+          />
+        </div>
+
+        <div class="grid-form">
+          <div class="form-group">
+            <label for="valorTotal">Valor Total *</label>
+            <input
+              id="valorTotal"
+              type="number"
+              formControlName="valorTotal"
+              class="form-control"
+              style="display: none"
+              placeholder="0.00"
+              min="0.01"
+              step="0.01"
+              [disabled]="true"
+              required
+              readonly
+              [value]="calcularTotal() | number: '1.2-2'"
+            />
+
+            <span class="valorCompra">R$ {{ calcularTotal() | number: '1.2-2' }}</span>
+          </div>
+
+          <div class="form-group">
+            <label for="valorTotalFinal">Valor Total Final *</label>
+            <input
+              id="valorTotalFinal"
+              type="number"
+              formControlName="valorTotalFinal"
+              class="form-control"
+              style="display: none"
+              placeholder="0.00"
+              min="0.01"
+              step="0.01"
+              [disabled]="true"
+              required
+              readonly
+              [value]="calcularTotalFinal() | number: '1.2-2'"
+            />
+
+            <span class="valorCompra">R$ {{ calcularTotalFinal() | number: '1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="observacao">Observações</label>
+        <textarea
+          id="observacao"
+          formControlName="observacao"
+          class="form-control"
+          rows="3"
+          placeholder="Observações sobre a compra (opcional)"
+        ></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-back" (click)="voltar()">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Voltar</span>
+        </button>
+        <button type="submit" class="btn-submit" [disabled]="cadastroForm.invalid || itens.length === 0">
+          <span *ngIf="!loadingButtonCreate">Finalizar Compra</span>
+          <span *ngIf="loadingButtonCreate">Processando...</span>
+          <mat-icon>check</mat-icon>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

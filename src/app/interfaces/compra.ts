@@ -46,20 +46,25 @@ export type Compra = {
   itens: ItemCompra[];
 };
 
-export type CreateCompraDto = {
+export interface CreateCompraDto {
+  clienteId: number;
   tipoPagamento: TipoPagamento;
   condicaoPagamento: CondicaoPagamento;
-  status: StatusCompra;
   valorTotal: number;
   valorTotalFinal: number;
   desconto?: number;
   descontoFinal?: number;
   observacao?: string;
-  nfeNumero?: string;
-  nfeChave?: string;
-  clienteId: number;
-  itens: ItemCompra[];
-};
+  itens: CreateItemCompraDto[];
+}
+
+export interface CreateItemCompraDto {
+  produtoId: number;
+  quantidade: number;
+  preco: number;
+  desconto?: number;
+  total: number;
+}
 
 export type UpdateCompraDto = {
   tipoPagamento?: TipoPagamento;
