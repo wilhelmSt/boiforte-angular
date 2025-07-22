@@ -78,6 +78,7 @@ export class CadastroCompraComponent {
     this.cadastroForm.get('valorTotalFinal')?.setValue(data?.valorTotalFinal);
     this.cadastroForm.get('descontoFinal')?.setValue(data?.descontoFinal);
     this.itens = data.itens as unknown as Array<CreateItemCompraDto & CorteEspecie>;
+    this.updateFormState();
   }
 
   updateFormState(): void {
@@ -128,6 +129,8 @@ export class CadastroCompraComponent {
       },
       { validator: this.validarCondicaoPagamento }
     );
+
+    this.updateFormState();
   }
 
   validarCondicaoPagamento(group: FormGroup) {
